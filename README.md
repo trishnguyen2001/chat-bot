@@ -4,7 +4,7 @@
 
 I often think about how much people place emphasis on seeming like they care and not on how much they actually care. It is commonplace to put up a front of being interested when someone talks to you — even more so when people become vulnerable with you. I also find myself doing this. A lot of people do this from a place of not wanting to hurt others, but I wonder why the care can’t come from a place of genuine concern more. I still don’t know if there’s an easy answer to this, but I hope my project will help people become more aware of this.
 
-This project is an expansion on a [previous project][https://github.com/trishnguyen2001/radical-play] of mine.
+This project is an expansion on a [previous project](https://github.com/trishnguyen2001/radical-play) of mine.
 
 ### CONCEPT
 
