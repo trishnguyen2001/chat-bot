@@ -35,8 +35,8 @@ let restartBtn;
 let sendBtn;
 let chatBtn;
 let saveBtn;
-let backBtnA;
 let artStmtBtn;
+let achvBtn;
 
 //input form
 let inp;
@@ -102,11 +102,6 @@ function setup() {
   backBtn.mousePressed(reset);
   backBtn.hide();
 
-  backBtnA = createButton("back");
-  backBtnA.position(width * 0.01, height * 0.02);
-  backBtnA.mousePressed(reset);
-  backBtnA.hide();
-
   sendBtn = createButton("send");
   sendBtn.position(width * 0.85, height * 0.9);
   sendBtn.size(width * 0.1, height * 0.08);
@@ -120,6 +115,11 @@ function setup() {
   saveBtn.mousePressed(saveChat);
   saveBtn.hide();
 
+  achvBtn = createButton("achievements");
+  achvBtn.size(width * 0.23, height * 0.05);
+  achvBtn.position(width * 0.75, height * 0.05);
+  achvBtn.mousePressed(viewAchv);
+  achvBtn.hide();
   //player pfp
   playerPic = loadImage("assets/player.png");
 
@@ -217,6 +217,8 @@ function draw() {
     case "end":
       endScreen();
       break;
+    case "achv":
+      achvScreen();
     default:
       break;
   }
@@ -231,13 +233,13 @@ function homeScreen() {
   saveBtn.hide();
   restartBtn.hide();
   backBtn.hide();
-  backBtnA.hide();
   sendBtn.hide();
   chatBtn.hide();
   artStmtBtn.show();
   gui.hide();
   inp.hide();
   startBtn.show();
+  achvBtn.show();
   background(66, 77, 105);
 
   //text setup
@@ -256,13 +258,13 @@ function homeScreen() {
 }
 
 function instrScreen() {
+  achvBtn.hide();
   saveBtn.hide();
   restartBtn.hide();
   backBtn.hide();
   sendBtn.hide();
   chatBtn.show();
   startBtn.hide();
-  backBtnA.hide();
   artStmtBtn.hide();
   gui.hide();
   inp.hide();
@@ -301,15 +303,40 @@ function instrScreen() {
   );
 }
 
-function artStmtScreen() {
+function achvScreen() {
+  achvBtn.hide();
   saveBtn.hide();
   restartBtn.hide();
-  backBtn.hide();
+  backBtn.show();
   sendBtn.hide();
   chatBtn.hide();
   startBtn.hide();
   artStmtBtn.hide();
-  backBtnA.show();
+  gui.hide();
+  inp.hide();
+  background(66, 77, 105);
+
+  //text setup
+  textFont(neucha);
+  textSize(height * 0.08);
+  textAlign(CENTER, CENTER);
+  fill(195, 232, 222);
+  text("achievements", width * 0.5, height * 0.1);
+
+  textSize(height * 0.03);
+  fill(213, 220, 240);
+  text("achievements will be implemented soon!", width * 0.5, height * 0.25);
+}
+
+function artStmtScreen() {
+  achvBtn.hide();
+  saveBtn.hide();
+  restartBtn.hide();
+  backBtn.show();
+  sendBtn.hide();
+  chatBtn.hide();
+  startBtn.hide();
+  artStmtBtn.hide();
   gui.hide();
   inp.hide();
   background(66, 77, 105);
@@ -331,13 +358,13 @@ function artStmtScreen() {
 }
 
 function chatScreen() {
+  achvBtn.hide();
   lines = 1;
   saveBtn.hide();
   inp.show();
   sendBtn.show();
   chatBtn.hide();
   startBtn.hide();
-  backBtnA.hide();
   artStmtBtn.hide();
   backBtn.show();
   background(66, 77, 105);
@@ -382,12 +409,12 @@ function chatScreen() {
 }
 
 function endScreen() {
+  achvBtn.hide();
   backBtn.hide();
   restartBtn.show();
   saveBtn.show();
   chatBtn.hide();
   sendBtn.hide();
-  backBtnA.hide();
   artStmtBtn.hide();
   inp.hide();
   gui.hide();
@@ -454,6 +481,10 @@ function reset() {
   msgs = [];
   mi = 0;
   y = 0.33;
+}
+
+function viewAchv() {
+  gamestate = "achv";
 }
 
 function reformatTxt(msg) {
