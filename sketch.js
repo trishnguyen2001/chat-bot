@@ -1,15 +1,10 @@
 //fonts
 let neucha;
 
-// gui params
-var CareLevel = 3;
-
 // gui
+var CareLevel = 3;
 let gui;
 let div;
-
-//scribble
-let scrib;
 
 //game variables
 let gamestate;
@@ -41,7 +36,15 @@ let achvBtn;
 //input form
 let inp;
 
-//COLORS
+//achvmts
+let meanie;
+let bff;
+let botception;
+let superSleuth;
+let emo;
+let weirdo;
+
+//////////////////////////COLORS/////////////////////
 //dark blue         #424D69    66, 77, 105
 //blue              #66769D    102, 118, 157
 //light blue        #A6B2D3    166, 178, 211
@@ -50,6 +53,7 @@ let inp;
 //green             #c3e8de    195, 232, 222
 //light green       #dff0eb    223, 240, 235
 
+//////////////////////////MAIN FUNCTIONS/////////////////////
 function setup() {
   c = createCanvas(windowWidth, windowHeight);
 
@@ -120,11 +124,49 @@ function setup() {
   achvBtn.position(width * 0.75, height * 0.05);
   achvBtn.mousePressed(viewAchv);
   achvBtn.hide();
+
   //player pfp
   playerPic = loadImage("assets/player.png");
 
-  //homescreen bot
+  //homescreen bot pic
   homeBot = loadImage("assets/homepg.png");
+
+  //achvmt pics
+  meanie = new Achvmt(
+    "banned",
+    "You were so mean to CB that they're wallowing in self-hate now... you're officially banned :/",
+    "loadImage('assets/meanie.png')"
+  );
+
+  bff = new Achvmt(
+    "CB's new bff!",
+    "CB mistook your basic human decency as affection, and now they will never let you leave! :D",
+    "loadImage('assets/bff.png')"
+  );
+
+  botception = new Achvmt(
+    "meanest person ever!!!",
+    "Congrats! You've made CB question everything, and now they're spiraling out of control!\nYou really do fuck up everything around you!!",
+    "loadImage('assets/botception.png')"
+  );
+
+  superSleuth = new Achvmt(
+    "super sleuth",
+    "Seriously... How did you find it?",
+    "loadImage('assets/sleuth.png')"
+  );
+
+  emo = new Achvmt(
+    "emo relapse",
+    "pain...agony...SUFFERING!\nthe teen angst levels are astronomical",
+    "loadImage('assets/emo.png')"
+  );
+
+  weirdo = new Achvmt(
+    "weirdo",
+    "ummmmmmmmmmmmmmmm ok???",
+    "loadImage('assets/weirdo.png')"
+  );
 
   //game vars
   limit = int(random(6, 9));
@@ -199,6 +241,19 @@ function preload() {
   }
 }
 
+function keyPressed() {
+  if (gamestate === "chat") {
+    if (keyCode == ENTER || keyCode == RETURN) {
+      getMsg();
+      score++;
+    }
+  }
+}
+
+function saveChat() {
+  save(chatPic, getTime() + "-chat-bot.png");
+}
+
 function draw() {
   //game state
   switch (gamestate) {
@@ -228,6 +283,8 @@ function draw() {
     gamestate = "end";
   }
 }
+
+//////////////////////////SCREEN RENDERING FUNCTIONS/////////////////////
 
 function homeScreen() {
   saveBtn.hide();
@@ -440,19 +497,7 @@ function endScreen() {
   image(homeBot, width - height * 0.35, height * 0.72);
 }
 
-function keyPressed() {
-  if (gamestate === "chat") {
-    if (keyCode == ENTER || keyCode == RETURN) {
-      getMsg();
-      score++;
-    }
-  }
-}
-
-function saveChat() {
-  save(chatPic, getTime() + "-chat-bot.png");
-}
-
+//////////////////////////MSG FUNCTIONS/////////////////////
 function getTime() {
   return hour() + ":" + minute() + ":" + second();
 }
@@ -461,30 +506,6 @@ function respond(msg) {
   let rand = int(random(0, 5));
   console.log(`rand = ${rand}`);
   return new Msg(getTime(), bots[CareLevel].responses[rand], chatbot);
-}
-
-function startGame() {
-  gamestate = "instr";
-}
-
-function startChat() {
-  gamestate = "chat";
-}
-
-function viewArtStmt() {
-  gamestate = "artstmt";
-}
-
-function reset() {
-  gamestate = "home";
-  score = 0;
-  msgs = [];
-  mi = 0;
-  y = 0.33;
-}
-
-function viewAchv() {
-  gamestate = "achv";
 }
 
 function reformatTxt(msg) {
@@ -549,6 +570,33 @@ function showMsgs() {
   }
 }
 
+//////////////////////////GAME STATE FUNCTIONS////////////////
+
+function startGame() {
+  gamestate = "instr";
+}
+
+function startChat() {
+  gamestate = "chat";
+}
+
+function viewArtStmt() {
+  gamestate = "artstmt";
+}
+
+function reset() {
+  gamestate = "home";
+  score = 0;
+  msgs = [];
+  mi = 0;
+  y = 0.33;
+}
+
+function viewAchv() {
+  gamestate = "achv";
+}
+
+//////////////////////////CLASSES//////////////////////////
 class Msg {
   constructor(time, msg, sender) {
     this.time = time;
@@ -630,4 +678,21 @@ class Msg {
       text(r, width * 0.29, height * (y + 0.015) + msgBoxCenter);
     }
   }
+}
+
+class Achvmt {
+  constructor(title, descr, img) {
+    this.title = title;
+    this.descr = descr;
+    this.img = img;
+  }
+
+  //shows achievement on screen
+  display(x, y) {}
+
+  //unlocks achievement w/ notif
+  unlock(a) {}
+
+  //locks achivement
+  lock(a) {}
 }
