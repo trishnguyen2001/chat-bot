@@ -49,6 +49,7 @@ let botception;
 let superSleuth;
 let emo;
 let weirdo;
+let lockedPic;
 
 //////////////////////////COLORS/////////////////////
 //dark blue         #424D69    66, 77, 105
@@ -93,7 +94,7 @@ function setup() {
   chatBtn.hide();
 
   artStmtBtn = createButton("artist's statement");
-  artStmtBtn.size(width * 0.2, height * 0.04);
+  artStmtBtn.size(200, height * 0.06);
   artStmtBtn.position(width * 0.475, height * 0.8);
   artStmtBtn.center("horizontal");
   artStmtBtn.mousePressed(viewArtStmt);
@@ -145,39 +146,45 @@ function setup() {
 
   //achvmt pics
   meanie = new Achvmt(
-    "banned",
-    "You were so mean to CB that they're wallowing in self-hate now... you're officially banned :/",
-    "loadImage('assets/meanie.png')"
+    "rude af",
+    "You were so mean to CB that\nthey're wallowing in self-hate now...\nyou're officially banned :/",
+    loadImage("assets/meanie.png"),
+    "locked"
   );
 
   bff = new Achvmt(
     "CB's new bff!",
-    "CB mistook your basic human decency as affection, and now they will never let you leave! :D",
-    "loadImage('assets/bff.png')"
+    "CB mistook your basic human\ndecency as affection, and now they\nwill NEVER let you leave!     :D",
+    loadImage("assets/bff.png"),
+    "locked"
   );
 
   botception = new Achvmt(
-    "meanest person ever!!!",
-    "Congrats! You've made CB question everything, and now they're spiraling out of control!\nYou really do fuck up everything around you!!",
-    "loadImage('assets/botception.png')"
+    "botception",
+    "Congrats - you made CB question\neverything and now they're spiraling!\nYou really do fuck up everything!!",
+    loadImage("assets/botception.png"),
+    "locked"
   );
 
   superSleuth = new Achvmt(
     "super sleuth",
-    "Seriously... How did you find it?",
-    "loadImage('assets/sleuth.png')"
+    "Seriously...\nHow did you find it?",
+    loadImage("assets/sleuth.png"),
+    "locked"
   );
 
   emo = new Achvmt(
     "emo relapse",
-    "pain...agony...SUFFERING!\nthe teen angst levels are astronomical",
-    "loadImage('assets/emo.png')"
+    "pain...agony...SUFFERING!\nthe teen angst levels\nare astronomical",
+    loadImage("assets/emo.png"),
+    "locked"
   );
 
   weirdo = new Achvmt(
     "weirdo",
     "ummmmmmmmmmmmmmmm ok???",
-    "loadImage('assets/weirdo.png')"
+    loadImage("assets/weirdo.png"),
+    "locked"
   );
 
   //game vars
@@ -251,6 +258,8 @@ function preload() {
   for (let i = 1; i <= 5; i++) {
     bots[i].pic = loadImage("assets/care" + i + ".png");
   }
+
+  lockedPic = loadImage("assets/locked.png");
 
   //sounds
   soundFormats("mp3", "wav");
@@ -401,9 +410,23 @@ function achvScreen() {
   fill(195, 232, 222);
   text("achievements", width * 0.5, height * 0.1);
 
-  textSize(height * 0.03);
+  textSize(height * 0.04);
   fill(213, 220, 240);
-  text("achievements will be implemented soon!", width * 0.5, height * 0.25);
+  text("try to unlock all of them!", width * 0.5, height * 0.2);
+
+  meanie.display(width * 0.025, height * 0.25);
+  bff.display(width * 0.345, height * 0.25);
+  botception.display(width * 0.67, height * 0.25);
+  superSleuth.display(width * 0.025, height * 0.55);
+  emo.display(width * 0.345, height * 0.55);
+  weirdo.display(width * 0.67, height * 0.55);
+
+  meanie.unlock();
+  //bff.unlock();
+  botception.unlock();
+  //superSleuth.unlock();
+  emo.unlock();
+  weirdo.unlock();
 }
 
 function artStmtScreen() {
@@ -707,19 +730,76 @@ class Msg {
   }
 }
 
+class Notification {}
+
 class Achvmt {
-  constructor(title, descr, img) {
+  constructor(title, descr, img, state) {
     this.title = title;
     this.descr = descr;
     this.img = img;
+    this.state = state;
   }
 
   //shows achievement on screen
-  display(x, y) {}
+  display(x, y) {
+    if (this.state === "locked") {
+      textFont(neucha);
+      //achvmt box
+      noStroke();
+      fill(102, 118, 157);
+      rect(x, y, width * 0.3, width * 0.25, 10);
+
+      //achvmt title
+      textSize(height * 0.04);
+      fill(66, 77, 105);
+      text(this.title, x + width * 0.15, y + height * 0.035);
+
+      //achvmt img
+      lockedPic.resize(width * 0.085, 0);
+      image(lockedPic, x + width * 0.11, y + height * 0.08);
+
+      //achvmt descr
+      textSize(height * 0.035);
+      fill(213, 220, 240);
+      text("[redacted]", x + width * 0.15, y + height * 0.22);
+    } else {
+      //dark blue         #424D69    66, 77, 105
+      //blue              #66769D    102, 118, 157
+      //light blue        #A6B2D3    166, 178, 211
+      //light light blue  #d5dcf0    213, 220, 240
+      //white             #FFFFFF    255, 255, 255
+      //green             #c3e8de    195, 232, 222
+      //light green       #dff0eb    223, 240, 235
+
+      textFont(neucha);
+      //achvmt box
+      noStroke();
+      fill(166, 178, 211);
+      rect(x, y, width * 0.3, width * 0.25, 10);
+
+      //achvmt title
+      textSize(height * 0.04);
+      fill(66, 77, 105);
+      text(this.title, x + width * 0.15, y + height * 0.035);
+
+      //achvmt img
+      this.img.resize(width * 0.075, 0);
+      image(this.img, x + width * 0.11, y + height * 0.08);
+
+      //achvmt descr
+      textSize(height * 0.023);
+      fill(102, 118, 157);
+      text(this.descr, x + width * 0.15, y + height * 0.22);
+    }
+  }
 
   //unlocks achievement w/ notif
-  unlock(a) {}
+  unlock() {
+    this.state = "unlocked";
+  }
 
   //locks achivement
-  lock(a) {}
+  lock() {
+    this.state = "locked";
+  }
 }
