@@ -36,6 +36,12 @@ let achvBtn;
 //input form
 let inp;
 
+//sounds
+let bgSound;
+let clickSound;
+let notifSound;
+let typingSound;
+
 //achvmts
 let meanie;
 let bff;
@@ -124,6 +130,12 @@ function setup() {
   achvBtn.position(width * 0.75, height * 0.05);
   achvBtn.mousePressed(viewAchv);
   achvBtn.hide();
+
+  //sounds
+  // bgSound.outputVolume(0.2);
+  // typingSound.outputVolume(0.8);
+  // clickSound.outputVolume(0.8);
+  // notifSound.outputVolume(1);
 
   //player pfp
   playerPic = loadImage("assets/player.png");
@@ -239,11 +251,19 @@ function preload() {
   for (let i = 1; i <= 5; i++) {
     bots[i].pic = loadImage("assets/care" + i + ".png");
   }
+
+  //sounds
+  soundFormats("mp3", "wav");
+  bgSound = loadSound("assets/click.mp3");
+  typingSound = loadSound("assets/typing.wav");
+  clickSound = loadSound("assets/click.mp3");
+  notifSound = loadSound("assets/notif.mp3");
 }
 
 function keyPressed() {
   if (gamestate === "chat") {
     if (keyCode == ENTER || keyCode == RETURN) {
+      clickSound.play();
       getMsg();
       score++;
     }
@@ -297,6 +317,7 @@ function homeScreen() {
   inp.hide();
   startBtn.show();
   achvBtn.show();
+  //bgSound.play();
   background(66, 77, 105);
 
   //text setup
@@ -505,6 +526,7 @@ function getTime() {
 function respond(msg) {
   let rand = int(random(0, 5));
   console.log(`rand = ${rand}`);
+  if (gamestate === "chat") notifSound.play();
   return new Msg(getTime(), bots[CareLevel].responses[rand], chatbot);
 }
 
@@ -573,18 +595,22 @@ function showMsgs() {
 //////////////////////////GAME STATE FUNCTIONS////////////////
 
 function startGame() {
+  clickSound.play();
   gamestate = "instr";
 }
 
 function startChat() {
+  clickSound.play();
   gamestate = "chat";
 }
 
 function viewArtStmt() {
+  clickSound.play();
   gamestate = "artstmt";
 }
 
 function reset() {
+  clickSound.play();
   gamestate = "home";
   score = 0;
   msgs = [];
@@ -593,6 +619,7 @@ function reset() {
 }
 
 function viewAchv() {
+  clickSound.play();
   gamestate = "achv";
 }
 
