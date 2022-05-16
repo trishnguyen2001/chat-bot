@@ -12,16 +12,19 @@ let score;
 let limit;
 let currentMsg;
 let msgs = [];
-let mi;
+let mi; //msgs index
 let chatbot;
-let y;
-let lines;
 let bots = [];
 let playerPic;
 let homeBot;
 let botPic;
 let chatPic;
-let c;
+let phonePic;
+let ellipsePic;
+let c; //canvas
+
+let msgY; //current msg height
+let msgL; //msgL in prev msg
 
 //buttons
 let startBtn;
@@ -131,7 +134,7 @@ function setup() {
   });
 
   backBtn = createButton("back");
-  backBtn.position(width * 0.01, height * 0.02);
+  backBtn.position(width * 0.02, height * 0.02);
   backBtn.mousePressed(reset);
   backBtn.hide();
 
@@ -210,11 +213,14 @@ function setup() {
   );
 
   //game vars
-  limit = int(random(6, 9));
+  //limit = int(random(6, 9));
   score = 0;
   mi = 0;
   chatbot = "CB";
-  gamestate = "home";
+  //gamestate = "home";
+
+  limit = 10;
+  gamestate = "chat";
 }
 
 function preload() {
@@ -268,7 +274,7 @@ function preload() {
     {
       pic: null,
       responses: [
-        "i'll always be here for you ok?\n):",
+        "i'll always be here for you ok? ):",
         "can i do anything?",
         "omg are you ok?",
         "i'm sure you did your best with what you had i'm proud of you",
@@ -281,13 +287,17 @@ function preload() {
     bots[i].pic = loadImage("assets/care" + i + ".png");
   }
 
+  //imgs
   lockedPic = loadImage("assets/locked.png");
+  phonePic = loadImage("assets/phone.png");
+  ellipsePic = loadImage("assets/ellipse.png");
 
   //sounds
   soundFormats("mp3", "wav");
   bgSound = loadSound("assets/click.mp3");
   typingSound = loadSound("assets/typing.wav");
   clickSound = loadSound("assets/click.mp3");
+  clickSound.setVolume(1.25);
   notifSound = loadSound("assets/notif.mp3");
 }
 
@@ -489,7 +499,6 @@ function artStmtScreen() {
 
 function chatScreen() {
   achvBtn.hide();
-  lines = 1;
   saveBtn.hide();
   inp.show();
   sendBtn.show();
@@ -506,13 +515,68 @@ function chatScreen() {
   fill(191, 207, 178);
   gui.show();
 
+  //vars
+  let x = width * 0.02;
+  msgY = 0.26;
+
+  //side menu
+  let sideL = width * 0.15;
+  fill(166, 178, 211);
+  noStroke();
+  rect(x, height * 0.15, sideL, height * 0.835, 5);
+  //pfp + chat
+  if (windowWidth >= 950) {
+  }
+  //only pfp
+  else {
+  }
+
   //chat box
   fill(166, 178, 211);
   noStroke();
-  rect(width * 0.2, height * 0.15, width * 0.75, height * 0.725, 5);
+  rect(x + sideL + 20, height * 0.15, width * 0.75, height * 0.725, 5);
 
+  //menu bar box
+  fill(166, 178, 211);
+  rect(x + sideL + 20, height * 0.15, width * 0.75, height * 0.08, 5);
+  fill(102, 118, 157);
+  rect(x + sideL + 20, height * 0.24, width * 0.75, height * 0.005);
+
+  //dark blue         #424D69    66, 77, 105
+  //blue              #66769D    102, 118, 157
+  //light blue        #A6B2D3    166, 178, 211
+  //light light blue  #d5dcf0    213, 220, 240
+  //white             #FFFFFF    255, 255, 255
+  //green             #c3e8de    195, 232, 222
+  //light green       #dff0eb    223, 240, 235
+
+  //menu bar pfp
+  imageMode(CENTER);
+  bots[CareLevel].pic.resize(height * 0.075, 0);
+  image(bots[CareLevel].pic, x + sideL + 55, height * 0.2);
+
+  //menu bar descr
+  textAlign(LEFT);
+
+  fill(66, 77, 105);
+  textSize(height * 0.04);
+  text("CB", x + sideL + 85, height * 0.1775);
+
+  fill(102, 118, 157);
+  textSize(height * 0.025);
+  text("active now", x + sideL + 85, height * 0.215);
+
+  //menu bar icons
+  phonePic.resize(height * 0.055, 0);
+  image(phonePic, x + sideL + width * 0.75 - 40, height * 0.2);
+
+  ellipsePic.resize(height * 0.04, 0);
+  image(ellipsePic, x + sideL + width * 0.75 - 5, height * 0.2);
+
+  //display messages
   showMsgs();
 
+  //reformats screen for screencapture
   if (score >= limit) {
     textAlign(CENTER);
     textSize(height * 0.065);
@@ -584,34 +648,38 @@ function respond(msg) {
 }
 
 function reformatTxt(msg) {
-  let l = 1;
+  msgL = 1;
   let reformatted = "";
   let prev = 0;
   let counter = 1;
   for (let i = 0; i < msg.length; i++) {
+    let current = msg.substring(i, i + 1);
+    //last line
     if (msg.length - i <= 18) {
       reformatted += msg.substring(prev, msg.length);
-      //console.log(
-      //  `1: i = ${i} counter = ${counter} reformatted = ${reformatted}`
-      //);
+      console.log(
+        `LAST LINE: i = ${i} counter = ${counter} reformatted = ${reformatted}`
+      );
       break;
-    } else if (counter >= 15) {
-      reformatted += msg.substring(prev, i) + "\n";
-      // console.log(
-      //  `2: i = ${i} count = ${counter} prev = ${prev} reformatted = ${reformatted}`
-      //);
+    }
+    //another line needed
+    else if (counter >= 18) {
+      let temp = msg.substring(prev, i);
+      reformatted += temp.trim() + "\n";
+      console.log(`NEW LINE: i = ${i} count = ${counter} prev = ${prev} `);
       counter = 0;
       prev = i;
-      l++;
+      msgL += 0.5;
       counter++;
-    } else {
-      // console.log(`3: i = ${i} counter = ${counter}`);
+    }
+    //middle of line
+    else {
+      //console.log(`MIDDLE OF LINE: i = ${i} counter = ${counter}`);
       counter++;
       continue;
     }
   }
   console.log(reformatted);
-  lines = l;
   return reformatted;
 }
 
@@ -619,7 +687,6 @@ function getMsg() {
   msg = inp.value();
   let current = new Msg(getTime(), msg, "user");
   msgs[mi] = current;
-  console.log(msgs[mi].time + " > " + msgs[mi].sender + " : " + msgs[mi].msg);
   mi++;
   score++;
   inp.value("please wait for CB to respond!");
@@ -631,17 +698,12 @@ function getMsg() {
     mi++;
     inp.value("");
   }, t);
-
-  // console.log(`mi = ${mi}`);
-  // console.log(msgs);
 }
 
 function showMsgs() {
-  y = 0.19;
   for (let i = 0; i < mi; i++) {
-    //msgs[i].setY(y);
-    msgs[i].display(y);
-    y += 0.05 * lines;
+    msgs[i].display(msgY);
+    msgY += 0.04; //spaces between msg boxes
   }
 }
 
@@ -668,7 +730,7 @@ function reset() {
   score = 0;
   msgs = [];
   mi = 0;
-  y = 0.33;
+  //msgY = 0.26;
 }
 
 function viewAchv() {
@@ -688,6 +750,15 @@ class Msg {
     textFont(neucha);
     rectMode(CORNER);
 
+    //reformat msg + update msgL
+    let r = reformatTxt(this.msg);
+
+    //display measurements
+    let msgBoxHeight = msgL * height * 0.05;
+    let msgBoxCenter = msgBoxHeight * 0.5;
+
+    console.log(`msgBoxHeight = ${msgBoxHeight}`);
+
     if (this.sender === "user") {
       //msg label
       fill(213, 220, 240);
@@ -701,26 +772,14 @@ class Msg {
       image(playerPic, width * 0.91, height * (y + 0.04));
 
       //msg box
-      let msgBoxHeight;
-      if (this.msg.length > 17) {
-        lines = int(this.msg.length / 17);
-        msgBoxHeight = height * 0.05 * lines;
-        console.log(lines);
-      } else {
-        msgBoxHeight = height * 0.05;
-      }
       noStroke();
       fill(223, 240, 235);
       rect(width * 0.624, height * (y + 0.015), width * 0.25, msgBoxHeight, 5);
 
       //msg
-      let msgBoxCenter = msgBoxHeight * 0.5;
       fill(66, 77, 105);
       textAlign(RIGHT);
       textSize(height * 0.02);
-
-      let r = reformatTxt(this.msg);
-
       text(r, width * 0.865, height * (y + 0.015) + msgBoxCenter);
     } else {
       //msg label
@@ -735,28 +794,17 @@ class Msg {
       image(bots[CareLevel].pic, width * 0.24, height * (y + 0.04));
 
       //msg box
-      let msgBoxHeight;
-      if (this.msg.length > 17) {
-        lines = int(this.msg.length / 17);
-        msgBoxHeight = height * 0.1 * lines;
-        console.log(lines);
-      } else {
-        msgBoxHeight = height * 0.05;
-      }
       noStroke();
       fill(213, 220, 240);
       rect(width * 0.28, height * (y + 0.015), width * 0.25, msgBoxHeight, 5);
 
       //msg
-      let msgBoxCenter = msgBoxHeight * 0.5;
       fill(102, 118, 157);
       textAlign(LEFT);
       textSize(height * 0.02);
-
-      let r = reformatTxt(this.msg);
-
       text(r, width * 0.29, height * (y + 0.015) + msgBoxCenter);
     }
+    msgY += msgL * 0.03 + 0.007;
   }
 }
 
