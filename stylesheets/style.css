@@ -1,6 +1,6 @@
 @font-face{
     font-family:neucha;
-    src:url(./assets/Neucha-Regular.ttf);
+    src:url("../assets/Neucha-Regular.ttf");
 }
 
 body {
@@ -28,7 +28,7 @@ button {
 
 #startbtn{
     font-family: neucha;
-    font-size: 2.5em;
+    font-size: 3em;
     font-weight: 1100;
     text-align: center;
     color: #66769D;

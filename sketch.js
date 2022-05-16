@@ -80,18 +80,33 @@ function setup() {
 
   //buttons
   startBtn = createButton("start");
-  startBtn.position(width * 0.5, height * 0.6);
-  startBtn.size(width * 0.3, height * 0.1);
+  startBtn.position(width * 0.5 - 175, height * 0.6);
+  startBtn.size(350, 85);
   startBtn.id("startbtn");
-  startBtn.center("horizontal");
+
+  startBtn.mouseOver(() => {
+    startBtn.position(width * 0.5 - 180, height * 0.585);
+    startBtn.size(360, 90);
+  });
+  startBtn.mouseOut(() => {
+    startBtn.position(width * 0.5 - 175, height * 0.6);
+    startBtn.size(350, 85);
+  });
   startBtn.mousePressed(startGame);
-  startBtn.hide();
 
   chatBtn = createButton("next");
-  chatBtn.position(width * 0.475, height * 0.8);
-  chatBtn.center("horizontal");
+  chatBtn.position(width * 0.5 - 75, height * 0.8);
+  chatBtn.size(150, 40);
   chatBtn.mousePressed(startChat);
   chatBtn.hide();
+  chatBtn.mouseOver(() => {
+    chatBtn.position(width * 0.5 - 77.5, height * 0.7925);
+    chatBtn.size(155, 45);
+  });
+  chatBtn.mouseOut(() => {
+    chatBtn.position(width * 0.5 - 75, height * 0.8);
+    chatBtn.size(150, 40);
+  });
 
   artStmtBtn = createButton("artist's statement");
   artStmtBtn.size(200, height * 0.06);
@@ -101,12 +116,19 @@ function setup() {
   artStmtBtn.hide();
 
   restartBtn = createButton("retry");
-  restartBtn.position(width * 0.5, height * 0.6);
-  restartBtn.size(width * 0.3, height * 0.1);
-  restartBtn.center("horizontal");
+  restartBtn.position(width * 0.5 - 175, height * 0.6);
+  restartBtn.size(350, 60);
   restartBtn.id("restartbtn");
   restartBtn.mousePressed(reset);
   restartBtn.hide();
+  restartBtn.mouseOver(() => {
+    restartBtn.position(width * 0.5 - 180, height * 0.585);
+    restartBtn.size(360, 65);
+  });
+  restartBtn.mouseOut(() => {
+    restartBtn.position(width * 0.5 - 175, height * 0.6);
+    restartBtn.size(350, 60);
+  });
 
   backBtn = createButton("back");
   backBtn.position(width * 0.01, height * 0.02);
@@ -120,23 +142,23 @@ function setup() {
   sendBtn.hide();
 
   saveBtn = createButton("save chat");
-  saveBtn.position(width * 0.5, height * 0.75);
-  saveBtn.size(width * 0.175, height * 0.05);
-  saveBtn.center("horizontal");
+  saveBtn.position(width * 0.5 - 75, height * 0.75);
+  saveBtn.size(125, 50);
   saveBtn.mousePressed(saveChat);
   saveBtn.hide();
 
   achvBtn = createButton("achievements");
-  achvBtn.size(width * 0.23, height * 0.05);
-  achvBtn.position(width * 0.75, height * 0.05);
+  if (width * 0.2 > 165) {
+    console.log("1");
+    achvBtn.size(165, 50);
+    achvBtn.position(width * 0.8, height * 0.05);
+  } else {
+    console.log("2");
+    achvBtn.size(width * 0.2, 50);
+    achvBtn.position(width * 0.75, height * 0.05);
+  }
   achvBtn.mousePressed(viewAchv);
   achvBtn.hide();
-
-  //sounds
-  // bgSound.outputVolume(0.2);
-  // typingSound.outputVolume(0.8);
-  // clickSound.outputVolume(0.8);
-  // notifSound.outputVolume(1);
 
   //player pfp
   playerPic = loadImage("assets/player.png");
@@ -322,9 +344,9 @@ function homeScreen() {
   sendBtn.hide();
   chatBtn.hide();
   artStmtBtn.show();
+  startBtn.show();
   gui.hide();
   inp.hide();
-  startBtn.show();
   achvBtn.show();
   //bgSound.play();
   background(66, 77, 105);
@@ -419,10 +441,6 @@ function achvScreen() {
 
   let incr = height * 0.02;
   let x = width * 0.5 - boxLength * 1.55;
-  // console.log("width = " + width);
-  // console.log("1.5 box = " + boxLength * 1.5);
-  // console.log("incr = " + incr);
-  // console.log("x = " + x);
   let y = height * 0.25;
 
   meanie.display(x, y);
@@ -524,6 +542,7 @@ function endScreen() {
   achvBtn.hide();
   backBtn.hide();
   restartBtn.show();
+  startBtn.hide();
   saveBtn.show();
   chatBtn.hide();
   sendBtn.hide();
@@ -778,14 +797,6 @@ class Achvmt {
       fill(213, 220, 240);
       text("[redacted]", x + boxLength * 0.5, y + boxHeight * 0.75);
     } else {
-      //dark blue         #424D69    66, 77, 105
-      //blue              #66769D    102, 118, 157
-      //light blue        #A6B2D3    166, 178, 211
-      //light light blue  #d5dcf0    213, 220, 240
-      //white             #FFFFFF    255, 255, 255
-      //green             #c3e8de    195, 232, 222
-      //light green       #dff0eb    223, 240, 235
-
       textFont(neucha);
       //achvmt box
       noStroke();
@@ -799,12 +810,12 @@ class Achvmt {
 
       //achvmt img
       this.img.resize(height * 0.075, 0);
-      image(lockedPic, x + boxLength * 0.5, y + boxHeight * 0.45);
+      image(this.img, x + boxLength * 0.5, y + boxHeight * 0.45);
 
       //achvmt descr
       textSize(height * 0.023);
       fill(102, 118, 157);
-      text("[redacted]", x + boxLength * 0.5, y + boxHeight * 0.75);
+      text(this.descr, x + boxLength * 0.5, y + boxHeight * 0.75);
     }
   }
 
