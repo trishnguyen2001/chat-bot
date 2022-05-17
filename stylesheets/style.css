@@ -12,6 +12,18 @@ canvas {
     vertical-align: top;
 }
 
+input{
+    font-family: neucha;
+    font-size: 1em;
+    font-weight: 50;
+    text-align: left;
+    color: #424D69;
+    border: 0px;
+    background-color: #d5dcf0;
+    text-indent: 10px;
+    border-radius: 15px;
+}
+
 button {
     font-family: neucha;
     width: 100px;

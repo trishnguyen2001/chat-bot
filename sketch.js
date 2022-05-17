@@ -225,7 +225,8 @@ function setup() {
   score = 0;
   mi = 0;
   chatbot = "CB";
-  gamestate = "home";
+  // gamestate = "home";
+  gamestate = "chat";
 
   dotColor = color(102, 118, 157);
   dotColor.setAlpha(255);
