@@ -41,10 +41,11 @@ let achvBtn;
 let inp;
 
 //sounds
-let bgSound;
+// let bgSound;
 let clickSound;
 let notifSound;
 let typingSound;
+let endSound;
 
 //achvmts
 let meanie;
@@ -220,18 +221,17 @@ function setup() {
   );
 
   //game vars
-  //limit = int(random(6, 9));
+  limit = int(random(6, 9));
   score = 0;
   mi = 0;
   chatbot = "CB";
-  //gamestate = "home";
-
-  limit = 10;
-  gamestate = "chat";
+  gamestate = "home";
 
   dotColor = color(102, 118, 157);
   dotColor.setAlpha(255);
   responding = false;
+
+  // bgSound.play();
 }
 
 function preload() {
@@ -305,11 +305,20 @@ function preload() {
 
   //sounds
   soundFormats("mp3", "wav");
-  bgSound = loadSound("assets/click.mp3");
+  // bgSound = loadSound("assets/bgMusic.mp3");
+  // bgSound.setVolume(0.05);
+
   typingSound = loadSound("assets/typing.wav");
+  typingSound.rate(2);
+  typingSound.setVolume(0.5);
+
   clickSound = loadSound("assets/click.mp3");
   clickSound.setVolume(1.25);
+
   notifSound = loadSound("assets/notif.mp3");
+
+  endSound = loadSound("assets/beep.mp3");
+  endSound.setVolume(0.4);
 }
 
 function keyPressed() {
@@ -370,7 +379,6 @@ function homeScreen() {
   gui.hide();
   inp.hide();
   achvBtn.show();
-  //bgSound.play();
   background(66, 77, 105);
 
   //text setup
@@ -580,11 +588,21 @@ function chatScreen() {
   text("active now", x + sideL + 85, height * 0.215);
 
   //menu bar icons
-  phonePic.resize(height * 0.055, 0);
-  image(phonePic, x + sideL + width * 0.75 - 40, height * 0.2);
+  image(
+    phonePic,
+    x + sideL + width * 0.75 - 40,
+    height * 0.2,
+    height * 0.05,
+    height * 0.05
+  );
 
-  ellipsePic.resize(height * 0.04, 0);
-  image(ellipsePic, x + sideL + width * 0.75 - 5, height * 0.2);
+  image(
+    ellipsePic,
+    x + sideL + width * 0.75 - 5,
+    height * 0.2,
+    height * 0.04,
+    height * 0.04
+  );
 
   //display messages
   showMsgs();
@@ -597,6 +615,9 @@ function chatScreen() {
   //reformats screen for screencapture
   if (score >= limit || msgY > 0.785) {
     prepScreenshot();
+    //sounds
+    if (typingSound.isPlaying()) typingSound.stop();
+    endSound.play();
     setTimeout(() => {
       gamestate = "end";
     }, 120);
@@ -717,13 +738,14 @@ function getMsg() {
   score++;
   responding = true;
   dotColor.setAlpha(255);
+  typingSound.play();
 
   //bot response
   let t = int(random(1500, 5450));
   setTimeout(() => {
     msgs[mi] = respond(msg);
     mi++;
-    inp.value("");
+    typingSound.stop();
     responding = false;
   }, t);
 }
