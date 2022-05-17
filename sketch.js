@@ -317,6 +317,7 @@ function keyPressed() {
     if (keyCode == ENTER || keyCode == RETURN) {
       clickSound.play();
       getMsg();
+      inp.value("");
       score++;
     }
   }
@@ -594,28 +595,11 @@ function chatScreen() {
   }
 
   //reformats screen for screencapture
-  if (score >= limit || msgY > 0.8) {
-    textAlign(CENTER);
-    textSize(height * 0.065);
-    fill(195, 232, 222);
-    text("care-bot", width * 0.575, height * 0.035);
-
-    textSize(height * 0.025);
-    fill(213, 220, 240);
-    text(
-      month() + "/" + day() + "/" + year() + " @ " + getTime(),
-      width * 0.575,
-      height * 0.093
-    );
-
-    textSize(height * 0.025);
-    fill(213, 220, 240);
-    text("care level: " + CareLevel, width * 0.575, height * 0.12);
-
-    chatPic = get(width * 0.2, 0, width * 0.75, height * 0.725);
+  if (score >= limit || msgY > 0.785) {
+    prepScreenshot();
     setTimeout(() => {
       gamestate = "end";
-    }, 100);
+    }, 120);
   }
 }
 
@@ -653,6 +637,31 @@ function endScreen() {
 }
 
 //////////////////////////MSG FUNCTIONS/////////////////////
+function prepScreenshot() {
+  translate(0, 0);
+  dotColor.setAlpha(0);
+
+  let chatBoxStart = width * 0.02 + width * 0.15 + 20;
+  let chatBoxEnd = chatBoxStart + width * 0.75;
+  let chatBoxHalf = (chatBoxEnd - chatBoxStart) / 2;
+
+  translate(chatBoxStart + chatBoxHalf, height * 0.035);
+  textAlign(CENTER);
+  textSize(height * 0.065);
+  fill(195, 232, 222);
+  text("care-bot", 0, 0);
+
+  textSize(height * 0.025);
+  fill(213, 220, 240);
+  text(month() + "/" + day() + "/" + year() + " @ " + getTime(), 0, 30);
+
+  textSize(height * 0.025);
+  fill(213, 220, 240);
+  text("care level: " + CareLevel, 0, 50);
+
+  chatPic = get(chatBoxStart, 0, chatBoxEnd - chatBoxStart, height * 0.875);
+}
+
 function getTime() {
   return hour() + ":" + minute() + ":" + second();
 }
@@ -773,21 +782,25 @@ function stopAnim() {
 //////////////////////////GAME STATE FUNCTIONS////////////////
 function startGame() {
   clickSound.play();
+  translate(0, 0);
   gamestate = "instr";
 }
 
 function startChat() {
   clickSound.play();
+  translate(0, 0);
   gamestate = "chat";
 }
 
 function viewArtStmt() {
   clickSound.play();
+  translate(0, 0);
   gamestate = "artstmt";
 }
 
 function reset() {
   clickSound.play();
+  translate(0, 0);
   gamestate = "home";
   score = 0;
   msgs = [];
@@ -795,6 +808,7 @@ function reset() {
 }
 
 function viewAchv() {
+  translate(0, 0);
   clickSound.play();
   gamestate = "achv";
 }
