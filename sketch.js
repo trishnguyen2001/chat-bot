@@ -20,6 +20,7 @@ let homeBot;
 let botPic;
 let chatPic;
 let phonePic;
+let dummy; //dummy photo file to preserve resolution
 let ellipsePic;
 let c; //canvas
 
@@ -53,6 +54,13 @@ let superSleuth;
 let emo;
 let weirdo;
 let lockedPic;
+
+//animation vars
+let k = 0,
+  t = 0,
+  m = 0;
+let dotColor;
+let responding;
 
 //////////////////////////COLORS/////////////////////
 //dark blue         #424D69    66, 77, 105
@@ -163,11 +171,10 @@ function setup() {
   achvBtn.mousePressed(viewAchv);
   achvBtn.hide();
 
-  //player pfp
+  //pfps
   playerPic = loadImage("assets/player.png");
-
-  //homescreen bot pic
   homeBot = loadImage("assets/homepg.png");
+  dummy = loadImage("assets/dummy.png");
 
   //achvmt pics
   meanie = new Achvmt(
@@ -221,6 +228,10 @@ function setup() {
 
   limit = 10;
   gamestate = "chat";
+
+  dotColor = color(102, 118, 157);
+  dotColor.setAlpha(255);
+  responding = false;
 }
 
 function preload() {
@@ -552,8 +563,9 @@ function chatScreen() {
 
   //menu bar pfp
   imageMode(CENTER);
-  bots[CareLevel].pic.resize(height * 0.075, 0);
-  image(bots[CareLevel].pic, x + sideL + 55, height * 0.2);
+  dummy.copy(bots[CareLevel].pic, 0, 0, 305, 305, 0, 0, 305, 305);
+  dummy.resize(height * 0.075, 0);
+  image(dummy, x + sideL + 55, height * 0.2);
 
   //menu bar descr
   textAlign(LEFT);
@@ -575,9 +587,14 @@ function chatScreen() {
 
   //display messages
   showMsgs();
+  if (responding == true) {
+    loadAnim();
+  } else {
+    stopAnim();
+  }
 
   //reformats screen for screencapture
-  if (score >= limit) {
+  if (score >= limit || msgY > 0.8) {
     textAlign(CENTER);
     textSize(height * 0.065);
     fill(195, 232, 222);
@@ -656,17 +673,17 @@ function reformatTxt(msg) {
     let current = msg.substring(i, i + 1);
     //last line
     if (msg.length - i <= 18) {
-      reformatted += msg.substring(prev, msg.length);
-      console.log(
-        `LAST LINE: i = ${i} counter = ${counter} reformatted = ${reformatted}`
-      );
+      reformatted += msg.substring(prev, msg.length).trim();
+      // console.log(
+      //   `LAST LINE: i = ${i} counter = ${counter} reformatted = ${reformatted}`
+      // );
       break;
     }
     //another line needed
-    else if (counter >= 18) {
+    else if (counter >= 18 && msg.substring(i, i + 1) == " ") {
       let temp = msg.substring(prev, i);
       reformatted += temp.trim() + "\n";
-      console.log(`NEW LINE: i = ${i} count = ${counter} prev = ${prev} `);
+      // console.log(`NEW LINE: i = ${i} count = ${counter} prev = ${prev} `);
       counter = 0;
       prev = i;
       msgL += 0.5;
@@ -689,14 +706,16 @@ function getMsg() {
   msgs[mi] = current;
   mi++;
   score++;
-  inp.value("please wait for CB to respond!");
+  responding = true;
+  dotColor.setAlpha(255);
 
   //bot response
-  let t = int(random(500, 2250));
+  let t = int(random(1500, 5450));
   setTimeout(() => {
     msgs[mi] = respond(msg);
     mi++;
     inp.value("");
+    responding = false;
   }, t);
 }
 
@@ -707,8 +726,51 @@ function showMsgs() {
   }
 }
 
-//////////////////////////GAME STATE FUNCTIONS////////////////
+//////////////////////////ANIMATION FUNCTIONS////////////////
 
+//LOADING ANIMATION: https://editor.p5js.org/black/sketches/HJbGfpCvM
+function loadAnim() {
+  // console.log("animating");
+  let x = width * 0.02 + width * 0.15 + 30;
+  translate(x, height * 0.84);
+  fill(dotColor);
+
+  textAlign(LEFT);
+  textSize(height * 0.03);
+  text("CB is typing", 0, 0);
+
+  translate(100, 0);
+  noStroke();
+  ellipse(15 * sin(radians(k)), 0, 6 * cos(radians(m)), 6 * cos(radians(m)));
+  ellipse(
+    15 * sin(radians(k) + PI / 3),
+    0,
+    6 * cos(radians(m) + PI / 3),
+    6 * cos(radians(m) + PI / 3)
+  );
+  ellipse(
+    15 * sin(radians(k) + PI / 6),
+    0,
+    6 * cos(radians(m) + PI / 6),
+    6 * cos(radians(m) + PI / 6)
+  );
+  if (k < 180) {
+    k += 2;
+    if (90 < k) {
+      if (m < 180) m += 4;
+      else m = 0;
+    }
+  } else {
+    k = 0;
+    m = 0;
+  }
+}
+
+function stopAnim() {
+  dotColor.setAlpha(0);
+}
+
+//////////////////////////GAME STATE FUNCTIONS////////////////
 function startGame() {
   clickSound.play();
   gamestate = "instr";
@@ -730,7 +792,6 @@ function reset() {
   score = 0;
   msgs = [];
   mi = 0;
-  //msgY = 0.26;
 }
 
 function viewAchv() {
@@ -750,6 +811,9 @@ class Msg {
     textFont(neucha);
     rectMode(CORNER);
 
+    //layout vars
+    let x = width * 0.02 + width * 0.15 + 55;
+
     //reformat msg + update msgL
     let r = reformatTxt(this.msg);
 
@@ -757,7 +821,7 @@ class Msg {
     let msgBoxHeight = msgL * height * 0.05;
     let msgBoxCenter = msgBoxHeight * 0.5;
 
-    console.log(`msgBoxHeight = ${msgBoxHeight}`);
+    //console.log(`msgBoxHeight = ${msgBoxHeight}`);
 
     if (this.sender === "user") {
       //msg label
@@ -772,39 +836,41 @@ class Msg {
       image(playerPic, width * 0.91, height * (y + 0.04));
 
       //msg box
+      let diff = width * 0.91 - 175 - 26.5;
       noStroke();
       fill(223, 240, 235);
-      rect(width * 0.624, height * (y + 0.015), width * 0.25, msgBoxHeight, 5);
+      rect(diff, height * (y + 0.015), 175, msgBoxHeight, 5);
 
       //msg
       fill(66, 77, 105);
       textAlign(RIGHT);
       textSize(height * 0.02);
-      text(r, width * 0.865, height * (y + 0.015) + msgBoxCenter);
+      text(r, diff + 175 - 5, height * (y + 0.015) + msgBoxCenter);
     } else {
       //msg label
       fill(213, 220, 240);
       textAlign(LEFT);
       textSize(height * 0.018);
-      text(this.time + " | " + this.sender, width * 0.29, height * y);
+      text(this.time + " | " + this.sender, x + 30, height * y);
 
       //pfp
       imageMode(CENTER);
-      bots[CareLevel].pic.resize(height * 0.065, 0);
-      image(bots[CareLevel].pic, width * 0.24, height * (y + 0.04));
+      dummy.copy(bots[CareLevel].pic, 0, 0, 305, 305, 0, 0, 305, 305);
+      //dummy.resize(height * 0.065, 0);
+      image(dummy, x, height * (y + 0.04));
 
       //msg box
       noStroke();
       fill(213, 220, 240);
-      rect(width * 0.28, height * (y + 0.015), width * 0.25, msgBoxHeight, 5);
+      rect(x + 30, height * (y + 0.015), 175, msgBoxHeight, 5);
 
       //msg
       fill(102, 118, 157);
       textAlign(LEFT);
       textSize(height * 0.02);
-      text(r, width * 0.29, height * (y + 0.015) + msgBoxCenter);
+      text(r, x + 37, height * (y + 0.015) + msgBoxCenter);
     }
-    msgY += msgL * 0.03 + 0.007;
+    msgY += msgL * 0.03 + 0.01;
   }
 }
 
