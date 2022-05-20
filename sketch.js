@@ -23,6 +23,8 @@ let phonePic;
 let dummy; //dummy photo file to preserve resolution
 let ellipsePic;
 let c; //canvas
+let currentBot; //bot's current pic
+let currentLvl = CareLevel; //current care lvl
 
 let msgY; //current msg height
 let msgL; //msgL in prev msg
@@ -69,7 +71,8 @@ let responding;
 //light blue        #A6B2D3    166, 178, 211
 //light light blue  #d5dcf0    213, 220, 240
 //white             #FFFFFF    255, 255, 255
-//green             #c3e8de    195, 232, 222
+//blue green        #c3e8de    195, 232, 222
+//green             #a0dec1    160, 222, 193
 //light green       #dff0eb    223, 240, 235
 
 //////////////////////////MAIN FUNCTIONS/////////////////////
@@ -77,11 +80,13 @@ function setup() {
   c = createCanvas(windowWidth, windowHeight);
 
   //set up gui
+  let x = width * 0.02;
+  let sideL = width * 0.15;
   gui = createGui(undefined, "CARE LEVEL", "QuickSettings");
   sliderRange(1, 5);
   gui.addGlobals("CareLevel");
-  gui.setPosition(width * 0.2, height * 0.02);
-  gui.resize(width * 0.75, height * 0.15);
+  gui.setPosition(x + sideL + 12.5, height * 0.02);
+  gui.resize(width * 0.76, height * 0.15);
   gui.hide();
 
   //input
@@ -227,6 +232,7 @@ function setup() {
   chatbot = "CB";
   // gamestate = "home";
   gamestate = "chat";
+  updatePic();
 
   dotColor = color(102, 118, 157);
   dotColor.setAlpha(255);
@@ -247,50 +253,86 @@ function preload() {
     //care lvl 1
     {
       pic: null,
+      displayName: "really mean",
       responses: [
-        "nobody fucking cares",
+        "nobody cares",
         "wtf why do you think i'd want to listen to this?",
         "ok and?? :/",
         "ummm ok???",
         "that sounds like a you problem tbh",
+        "damn you rly think i care",
+        "oh would you look at that\nmy last fuck",
+        "k",
+        "you rly do fuck up everything in your life, huh?",
+        "show me where i asked?",
       ],
     },
     //care lvl 2
     {
       pic: null,
+      displayName: "mean",
       responses: [
-        "damn that's crazy",
-        "damn that's crazy",
-        "damn that's crazy",
-        "damn that's crazy",
-        "damn that's crazy",
+        "k",
+        "that sucks",
+        "wow",
+        "damn",
+        "k",
+        "kk",
+        "wow",
+        "cool",
+        "wow",
+        "that sucks",
       ],
     },
     //care lvl 3
     {
       pic: null,
-      responses: ["k", "that sucks", "wow", "damn", "rly?"],
+      displayName: "indifferent",
+      responses: [
+        "damn that's crazy",
+        "damn that's crazy",
+        "damn that's crazy",
+        "damn that's crazy",
+        "damn that's crazy",
+        "damn that's crazy",
+        "damn that's crazy",
+        "damn that's crazy",
+        "damn that's crazy",
+        "damn that's crazy",
+      ],
     },
     //care lvl 4
     {
       pic: null,
+      displayName: "cares",
       responses: [
-        "oh no ):",
-        "omg are you ok?",
-        "no fucking way that happened",
-        "is there anything i can do? )):",
-        "i can't believe that happened",
+        "awww oh no",
+        "that sounds like it really sucked\ni'm sorry",
+        "nooooooooo",
+        "i hope you feel better",
+        "wth that sucks so much",
+        "dude i'm so sorry",
+        "omg you got this tho",
+        "; ^ ;",
+        "no stop that's so sad",
+        "stay strong you got this!!!",
       ],
     },
     //care lvl 5
     {
       pic: null,
+      displayName: "really cares",
       responses: [
         "i'll always be here for you ok? ):",
-        "can i do anything?",
-        "omg are you ok?",
-        "i'm sure you did your best with what you had i'm proud of you",
-        "everything will be ok!!",
+        "can i do anything? ):",
+        "omg are you ok?????",
+        "i'm sure you did your best with what you had\ni'm proud of you",
+        "everything will be ok!! i promise!",
+        "oh no ):",
+        "WHAT NOOOOO",
+        "where are they\nLET ME AT THEM",
+        "is there anything i can do? )):",
+        "i can't believe that happened...",
       ],
     },
   ];
@@ -350,6 +392,9 @@ function draw() {
       instrScreen();
       break;
     case "chat":
+      if (CareLevel != currentLvl) {
+        updatePic();
+      }
       chatScreen();
       break;
     case "end":
@@ -518,6 +563,15 @@ function artStmtScreen() {
   );
 }
 
+//dark blue         #424D69    66, 77, 105
+//blue              #66769D    102, 118, 157
+//light blue        #A6B2D3    166, 178, 211
+//light light blue  #d5dcf0    213, 220, 240
+//white             #FFFFFF    255, 255, 255
+//blue green        #c3e8de    195, 232, 222
+//green             #a0dec1    160, 222, 193
+//light green       #dff0eb    223, 240, 235
+
 function chatScreen() {
   achvBtn.hide();
   saveBtn.hide();
@@ -542,15 +596,98 @@ function chatScreen() {
 
   //side menu
   let sideL = width * 0.15;
+  let sideH = height * 0.835;
   fill(166, 178, 211);
   noStroke();
-  rect(x, height * 0.15, sideL, height * 0.835, 5);
-  //pfp + chat
+  rect(x, height * 0.15, sideL, sideH, 5);
+
+  //side bar profiles
+  let sideBarIconSize;
+  let incr;
+  let sideBarY;
+  let sideBarX;
+  let highlightX;
+  //show both name and pfp
   if (windowWidth >= 950) {
+    sideBarX = x + sideL * 0.2;
+    sideBarIconSize = height * 0.1;
+    incr = sideH * 0.07 + sideBarIconSize;
+    sideBarY = height * 0.245;
+    highlightX = sideBarX + sideBarX * 0.9;
+
+    //display names
+    fill(66, 77, 105);
+    textAlign(LEFT);
+    textSize(height * 0.035);
+    for (let i = 1; i <= 5; i++) {
+      text(
+        bots[i].displayName,
+        sideBarX + sideBarIconSize * 0.7,
+        sideBarY + (i - 1) * incr
+      );
+    }
   }
-  //only pfp
+  //show only pfp
   else {
+    sideBarX = x + sideL * 0.5;
+    sideBarIconSize = height * 0.13;
+    incr = sideH * 0.035 + sideBarIconSize;
+    sideBarY = height * 0.245;
+    highlightX = sideBarX;
   }
+
+  //highlight
+  let highlightY = sideBarY + (CareLevel - 1) * incr;
+  let highlightL = sideL - 5;
+  let highlightH = sideBarIconSize + 15;
+  rectMode(CENTER);
+  noStroke();
+  fill(102, 118, 157, 100);
+  rect(highlightX, highlightY, highlightL, highlightH, 5);
+
+  imageMode(CENTER);
+  //bot 1
+  image(
+    bots[1].pic,
+    sideBarX,
+    sideBarY + 0 * incr,
+    sideBarIconSize,
+    sideBarIconSize
+  );
+  //bot 2
+  image(
+    bots[2].pic,
+    sideBarX,
+    sideBarY + 1 * incr,
+    sideBarIconSize,
+    sideBarIconSize
+  );
+  //bot 3
+  image(
+    bots[3].pic,
+    sideBarX,
+    sideBarY + 2 * incr,
+    sideBarIconSize,
+    sideBarIconSize
+  );
+  //bot 4
+  image(
+    bots[4].pic,
+    sideBarX,
+    sideBarY + 3 * incr,
+    sideBarIconSize,
+    sideBarIconSize
+  );
+  //bot 5
+  image(
+    bots[5].pic,
+    sideBarX,
+    sideBarY + 4 * incr,
+    sideBarIconSize,
+    sideBarIconSize
+  );
+
+  rectMode(CORNER);
 
   //chat box
   fill(166, 178, 211);
@@ -558,35 +695,34 @@ function chatScreen() {
   rect(x + sideL + 20, height * 0.15, width * 0.75, height * 0.725, 5);
 
   //menu bar box
-  fill(166, 178, 211);
-  rect(x + sideL + 20, height * 0.15, width * 0.75, height * 0.08, 5);
-  fill(102, 118, 157);
-  rect(x + sideL + 20, height * 0.24, width * 0.75, height * 0.005);
-
-  //dark blue         #424D69    66, 77, 105
-  //blue              #66769D    102, 118, 157
-  //light blue        #A6B2D3    166, 178, 211
-  //light light blue  #d5dcf0    213, 220, 240
-  //white             #FFFFFF    255, 255, 255
-  //green             #c3e8de    195, 232, 222
-  //light green       #dff0eb    223, 240, 235
+  noStroke();
+  fill(102, 118, 157, 100);
+  rect(x + sideL + 20, height * 0.15, width * 0.75, height * 0.09, 5);
 
   //menu bar pfp
   imageMode(CENTER);
-  dummy.copy(bots[CareLevel].pic, 0, 0, 305, 305, 0, 0, 305, 305);
-  dummy.resize(height * 0.075, 0);
-  image(dummy, x + sideL + 55, height * 0.2);
+  image(
+    currentBot,
+    x + sideL + 55,
+    height * 0.195,
+    height * 0.0775,
+    height * 0.0775
+  );
 
   //menu bar descr
   textAlign(LEFT);
 
   fill(66, 77, 105);
   textSize(height * 0.04);
-  text("CB", x + sideL + 85, height * 0.1775);
+  text(bots[CareLevel].displayName, x + sideL + 85, height * 0.1775);
 
-  fill(102, 118, 157);
+  fill(66, 77, 105, 175);
   textSize(height * 0.025);
   text("active now", x + sideL + 85, height * 0.215);
+
+  fill(160, 222, 193);
+  ellipseMode(CENTER);
+  ellipse(x + sideL + 150, height * 0.22, height * 0.015, height * 0.015);
 
   //menu bar icons
   image(
@@ -689,7 +825,7 @@ function getTime() {
 }
 
 function respond(msg) {
-  let rand = int(random(0, 5));
+  let rand = int(random(0, 10));
   console.log(`rand = ${rand}`);
   if (gamestate === "chat") notifSound.play();
   return new Msg(getTime(), bots[CareLevel].responses[rand], chatbot);
@@ -756,6 +892,14 @@ function showMsgs() {
     msgs[i].display(msgY);
     msgY += 0.04; //spaces between msg boxes
   }
+}
+
+function updatePic() {
+  console.log(`UPDATEPIC: carelvl = ${CareLevel}`);
+  console.log(`UPDATEPIC: pic = ${bots[CareLevel].pic}`);
+  currentBot = loadImage("assets/care" + CareLevel + ".png");
+  //dummy.copy(currentBot, 0, 0, 305, 305, 0, 0, 305, 305);
+  currentLvl = CareLevel;
 }
 
 //////////////////////////ANIMATION FUNCTIONS////////////////
@@ -869,8 +1013,13 @@ class Msg {
 
       //pfp
       imageMode(CENTER);
-      playerPic.resize(height * 0.065, 0);
-      image(playerPic, width * 0.91, height * (y + 0.04));
+      image(
+        playerPic,
+        width * 0.91,
+        height * (y + 0.04),
+        height * 0.065,
+        height * 0.065
+      );
 
       //msg box
       let diff = width * 0.91 - 175 - 26.5;
@@ -892,9 +1041,7 @@ class Msg {
 
       //pfp
       imageMode(CENTER);
-      dummy.copy(bots[CareLevel].pic, 0, 0, 305, 305, 0, 0, 305, 305);
-      //dummy.resize(height * 0.065, 0);
-      image(dummy, x, height * (y + 0.04));
+      image(currentBot, x, height * (y + 0.04), height * 0.065, height * 0.065);
 
       //msg box
       noStroke();
