@@ -230,8 +230,8 @@ function setup() {
   score = 0;
   mi = 0;
   chatbot = "CB";
-  // gamestate = "home";
-  gamestate = "chat";
+  gamestate = "home";
+  // gamestate = "chat";
   updatePic();
 
   dotColor = color(102, 118, 157);
@@ -438,8 +438,13 @@ function homeScreen() {
   text("care-bot", width * 0.5, height * 0.45);
 
   imageMode(CORNER);
-  homeBot.resize(height * 0.35, 0);
-  image(homeBot, width - height * 0.35, height * 0.72);
+  image(
+    homeBot,
+    width - height * 0.35,
+    height * 0.65,
+    height * 0.35,
+    height * 0.35
+  );
 }
 
 function instrScreen() {
@@ -472,8 +477,7 @@ function instrScreen() {
 
   imageMode(CENTER);
   let img = bots[4].pic;
-  img.resize(height * 0.3, 0);
-  image(img, width * 0.5, height * 0.48);
+  image(img, width * 0.5, height * 0.48, height * 0.3, height * 0.3);
 
   text(
     "feel free to rant, and i'll care as much as you want!",
@@ -790,8 +794,14 @@ function endScreen() {
   );
 
   imageMode(CORNER);
-  homeBot.resize(height * 0.35, 0);
-  image(homeBot, width - height * 0.35, height * 0.72);
+
+  image(
+    homeBot,
+    width - height * 0.35,
+    height * 0.65,
+    height * 0.35,
+    height * 0.35
+  );
 }
 
 //////////////////////////MSG FUNCTIONS/////////////////////
