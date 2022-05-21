@@ -58,7 +58,7 @@ let botception;
 let superSleuth;
 let emo;
 let weirdo;
-
+let result;
 let lockedPic;
 
 //achvmt requirements
@@ -84,6 +84,7 @@ let k = 0,
   m = 0;
 let dotColor;
 let responding;
+let displaying;
 
 //////////////////////////COLORS/////////////////////
 //dark blue         #424D69    66, 77, 105
@@ -133,6 +134,7 @@ function setup() {
   dotColor = color(102, 118, 157);
   dotColor.setAlpha(255);
   responding = false;
+  displaying = false;
 }
 
 function initBtns() {
@@ -406,6 +408,10 @@ function saveChat() {
   save(chatPic, getTime() + "-chat-bot.png");
 }
 
+function playNotifSound() {
+  unlockSound.play();
+}
+
 function draw() {
   //game state
   switch (gamestate) {
@@ -419,10 +425,48 @@ function draw() {
       instrScreen();
       break;
     case "chat":
+      //updates bot pfps
       if (CareLevel != currentLvl) {
         updatePic();
       }
+
+      //screen render
       chatScreen();
+
+      //notification
+      if (result != "none") {
+        displaying = true;
+        if (result === "meanie") {
+          let notif = new Notification(meanie);
+          notif.display();
+        }
+        if (result === "bff") {
+          let notif = new Notification(bff);
+          notif.display();
+        }
+        if (result === "botception") {
+          let notif = new Notification(botception);
+          notif.display();
+        }
+        if (result === "emo") {
+          let notif = new Notification(emo);
+          notif.display();
+        }
+        if (result === "weirdo") {
+          let notif = new Notification(weirdo);
+          notif.display();
+        }
+        if (result === "superSleuth") {
+          let notif = new Notification(superSleuth);
+          notif.display();
+        }
+
+        //disappear after 5 secs
+        setTimeout(() => {
+          result = "none";
+          displaying = false;
+        }, 5000);
+      }
       break;
     case "end":
       endScreen();
@@ -439,17 +483,19 @@ function draw() {
   }
 
   //checks for super-sleuth achvmt
-  if (
-    gamestate === "chat" &&
-    mouseX >= width * 0.12 &&
-    mouseX <= width * 0.1207 &&
-    mouseY >= height * 0.62 &&
-    mouseY >= height * 0.63 &&
-    superSleuth.state === "locked"
-  ) {
-    superSleuth.unlock();
-    let notif = new Notification(superSleuth);
-    notif.display();
+
+  if (superSleuth.state === "locked") {
+    if (
+      gamestate === "chat" &&
+      mouseX >= width * 0.12 &&
+      mouseX <= width * 0.1207 &&
+      mouseY >= height * 0.62 &&
+      mouseY >= height * 0.63
+    ) {
+      superSleuth.unlock();
+      result = "superSleuth";
+      playNotifSound();
+    }
   }
 }
 
@@ -924,7 +970,7 @@ function getMsg() {
   typingSound.play();
 
   //test for achvmt
-  testAchv(current);
+  result = testAchv(current);
 
   //bot response
   let t = int(random(1500, 5450));
@@ -1033,9 +1079,8 @@ function testAchv(msg) {
     for (let i = 0; i < meanieRec.length; i++) {
       if (msg.msg.includes(meanieRec[i])) {
         meanie.unlock();
-        let notif = new Notification(meanie);
-        notif.display();
-        break;
+        unlockSound.play();
+        return "meanie";
       }
     }
   }
@@ -1045,9 +1090,8 @@ function testAchv(msg) {
     for (let i = 0; i < bffRec.length; i++) {
       if (msg.msg.includes(bffRec[i])) {
         bff.unlock();
-        let notif = new Notification(bff);
-        notif.display();
-        break;
+        unlockSound.play();
+        return "bff";
       }
     }
   }
@@ -1056,9 +1100,8 @@ function testAchv(msg) {
     for (let i = 0; i < botceptionRec.length; i++) {
       if (msg.msg.includes(botceptionRec[i])) {
         botception.unlock();
-        let notif = new Notification(botception);
-        notif.display();
-        break;
+        unlockSound.play();
+        return "botception";
       }
     }
   }
@@ -1067,9 +1110,8 @@ function testAchv(msg) {
     for (let i = 0; i < emoRec.length; i++) {
       if (msg.msg.includes(emoRec[i])) {
         emo.unlock();
-        let notif = new Notification(emo);
-        notif.display();
-        break;
+        unlockSound.play();
+        return "emo";
       }
     }
   }
@@ -1078,12 +1120,12 @@ function testAchv(msg) {
     for (let i = 0; i < weirdoRec.length; i++) {
       if (msg.msg.includes(weirdoRec[i])) {
         weirdo.unlock();
-        let notif = new Notification(weirdo);
-        notif.display();
-        break;
+        unlockSound.play();
+        return "weirdo";
       }
     }
   }
+  return "none";
 }
 
 //////////////////////////CLASSES//////////////////////////
@@ -1170,12 +1212,42 @@ class Notification {
   }
 
   display() {
-    unlockSound.play();
-    unlockSound.play();
-    alert(
-      `"${this.achvmt.title}" unlocked!\ngo to the achievement's page to check it out`
+    let x = 300;
+    let y = 150;
+
+    //background box
+    fill(213, 220, 240);
+    rect(-10, height * 0.7, x, y, 5);
+
+    noFill();
+    stroke(102, 118, 157, 170);
+    strokeWeight(3);
+    rect(-10, height * 0.7 + 10, x - 10, y - 20, 5);
+    noStroke();
+
+    fill(66, 77, 105);
+    textSize(height * 0.035);
+    textAlign(LEFT);
+    text(
+      `"${this.achvmt.title}" unlocked!\ngo to the achievements page\nto check it out`,
+      40,
+      height * 0.8
     );
-    // fill();
+
+    // let direction = "growing";
+    // while (displaying) {
+    //   if (direction === "growing") {
+    //     x++;
+    //     if (x >= 320) {
+    //       direction = "shrinking";
+    //     }
+    //   } else {
+    //     x--;
+    //     if (x <= 300) {
+    //       direction = "growing";
+    //     }
+    //   }
+    // }
   }
 }
 
