@@ -120,12 +120,12 @@ function setup() {
   initBtns();
 
   //game vars
-  limit = int(random(6, 9));
+  limit = int(random(6, 12));
   score = 0;
   mi = 0;
   chatbot = "CB";
-  // gamestate = "home";
-  gamestate = "chat";
+  gamestate = "home";
+  // gamestate = "chat";
 
   //initialize bot pfps
   updatePic();
@@ -863,7 +863,7 @@ function chatScreen() {
   }
 
   //reformats screen for screencapture
-  if (score >= limit || msgY > 0.785) {
+  if (score >= limit || msgY * windowHeight > windowHeight - 105) {
     prepScreenshot();
     //sounds
     if (typingSound.isPlaying()) typingSound.stop();
@@ -1039,13 +1039,13 @@ function updatePic() {
 //LOADING ANIMATION: https://editor.p5js.org/black/sketches/HJbGfpCvM
 function loadAnim() {
   push();
-  // console.log("animating");
   let x = windowWidth * 0.02 + windowWidth * 0.15 + 30;
-  translate(x, windowHeight * 0.84);
+  translate(x, windowHeight - 100);
   fill(dotColor);
 
   textAlign(LEFT);
-  textSize(windowHeight * 0.03);
+  let txtSize = min(windowHeight * 0.03, 18);
+  textSize(txtSize);
   text("CB is typing", 0, 0);
 
   let incr = windowHeight * 0.03 * 2;
