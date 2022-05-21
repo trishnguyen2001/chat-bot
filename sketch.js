@@ -115,7 +115,27 @@ function setup() {
   inp.size(width * 0.625, height * 0.075);
   inp.hide();
 
-  //buttons
+  //initialize buttons
+  initBtns();
+
+  //game vars
+  limit = int(random(6, 9));
+  score = 0;
+  mi = 0;
+  chatbot = "CB";
+  gamestate = "home";
+  // gamestate = "chat";
+
+  //initialize bot pfps
+  updatePic();
+
+  //typing animation
+  dotColor = color(102, 118, 157);
+  dotColor.setAlpha(255);
+  responding = false;
+}
+
+function initBtns() {
   startBtn = createButton("start");
   startBtn.position(width * 0.5 - 175, height * 0.6);
   startBtn.size(350, 85);
@@ -196,69 +216,6 @@ function setup() {
   }
   achvBtn.mousePressed(viewAchv);
   achvBtn.hide();
-
-  //pfps
-  playerPic = loadImage("assets/player.png");
-  homeBot = loadImage("assets/homepg.png");
-  dummy = loadImage("assets/dummy.png");
-
-  //achvmt pics
-  meanie = new Achvmt(
-    "rude af",
-    "You were so mean to CB that\nthey're wallowing in self-hate now...\nyou're officially banned :/",
-    loadImage("assets/meanie.png"),
-    "locked"
-  );
-
-  bff = new Achvmt(
-    "CB's new bff!",
-    "CB mistook your basic human\ndecency as affection, and now they\nwill NEVER let you leave!     :D",
-    loadImage("assets/bff.png"),
-    "locked"
-  );
-
-  botception = new Achvmt(
-    "botception",
-    "Congrats - you made CB question\neverything and now they're spiraling!\nYou really do fuck up everything!!",
-    loadImage("assets/botception.png"),
-    "locked"
-  );
-
-  superSleuth = new Achvmt(
-    "super sleuth",
-    "Seriously...\nHow did you find it?",
-    loadImage("assets/sleuth.png"),
-    "locked"
-  );
-
-  emo = new Achvmt(
-    "emo relapse",
-    "pain...agony...SUFFERING!\nthe teen angst levels\nare astronomical",
-    loadImage("assets/emo.png"),
-    "locked"
-  );
-
-  weirdo = new Achvmt(
-    "weirdo",
-    "ummmmmmmmmmmmmmmm ok???",
-    loadImage("assets/weirdo.png"),
-    "locked"
-  );
-
-  //game vars
-  limit = int(random(6, 9));
-  score = 0;
-  mi = 0;
-  chatbot = "CB";
-  gamestate = "home";
-  // gamestate = "chat";
-  updatePic();
-
-  dotColor = color(102, 118, 157);
-  dotColor.setAlpha(255);
-  responding = false;
-
-  // bgSound.play();
 }
 
 function preload() {
@@ -365,6 +322,52 @@ function preload() {
   lockedPic = loadImage("assets/locked.png");
   phonePic = loadImage("assets/phone.png");
   ellipsePic = loadImage("assets/ellipse.png");
+  playerPic = loadImage("assets/player.png");
+  homeBot = loadImage("assets/homepg.png");
+  dummy = loadImage("assets/dummy.png");
+
+  //achvmt pics
+  meanie = new Achvmt(
+    "rude af",
+    "You were so mean to CB that\nthey're wallowing in self-hate now...\nyou're officially banned :/",
+    loadImage("assets/meanie.png"),
+    "locked"
+  );
+
+  bff = new Achvmt(
+    "CB's new bff!",
+    "CB mistook your basic human\ndecency as affection, and now they\nwill NEVER let you leave!     :D",
+    loadImage("assets/bff.png"),
+    "locked"
+  );
+
+  botception = new Achvmt(
+    "botception",
+    "Congrats - you made CB question\neverything and now they're spiraling!\nYou really do fuck up everything!!",
+    loadImage("assets/botception.png"),
+    "locked"
+  );
+
+  superSleuth = new Achvmt(
+    "super sleuth",
+    "Seriously...\nHow did you find it?",
+    loadImage("assets/sleuth.png"),
+    "locked"
+  );
+
+  emo = new Achvmt(
+    "emo relapse",
+    "pain...agony...SUFFERING!\nthe teen angst levels\nare astronomical",
+    loadImage("assets/emo.png"),
+    "locked"
+  );
+
+  weirdo = new Achvmt(
+    "weirdo",
+    "ummmmmmmmmmmmmmmm ok???",
+    loadImage("assets/weirdo.png"),
+    "locked"
+  );
 
   //sounds
   soundFormats("mp3", "wav");
@@ -1026,48 +1029,59 @@ function viewAchv() {
 
 function testAchv(msg) {
   //meanie
-  for (let i = 0; i < meanieRec.length; i++) {
-    if (msg.msg.includes(meanieRec[i])) {
-      meanie.unlock();
-      let notif = new Notification(meanie);
-      notif.display();
-      break;
+  if (meanie.state === "locked") {
+    for (let i = 0; i < meanieRec.length; i++) {
+      if (msg.msg.includes(meanieRec[i])) {
+        meanie.unlock();
+        let notif = new Notification(meanie);
+        notif.display();
+        break;
+      }
     }
   }
+
   //bff
-  for (let i = 0; i < bffRec.length; i++) {
-    if (msg.msg.includes(bffRec[i])) {
-      bff.unlock();
-      let notif = new Notification(bff);
-      notif.display();
-      break;
+  if (bff.state === "locked") {
+    for (let i = 0; i < bffRec.length; i++) {
+      if (msg.msg.includes(bffRec[i])) {
+        bff.unlock();
+        let notif = new Notification(bff);
+        notif.display();
+        break;
+      }
     }
   }
   //botception
-  for (let i = 0; i < botceptionRec.length; i++) {
-    if (msg.msg.includes(botceptionRec[i])) {
-      botception.unlock();
-      let notif = new Notification(botception);
-      notif.display();
-      break;
+  if (botception.state === "locked") {
+    for (let i = 0; i < botceptionRec.length; i++) {
+      if (msg.msg.includes(botceptionRec[i])) {
+        botception.unlock();
+        let notif = new Notification(botception);
+        notif.display();
+        break;
+      }
     }
   }
   //emo
-  for (let i = 0; i < emoRec.length; i++) {
-    if (msg.msg.includes(emoRec[i])) {
-      emo.unlock();
-      let notif = new Notification(emo);
-      notif.display();
-      break;
+  if (emo.state === "locked") {
+    for (let i = 0; i < emoRec.length; i++) {
+      if (msg.msg.includes(emoRec[i])) {
+        emo.unlock();
+        let notif = new Notification(emo);
+        notif.display();
+        break;
+      }
     }
   }
   //weirdo
-  for (let i = 0; i < weirdoRec.length; i++) {
-    if (msg.msg.includes(weirdoRec[i])) {
-      weirdo.unlock();
-      let notif = new Notification(weirdo);
-      notif.display();
-      break;
+  if (weirdo.state === "locked") {
+    for (let i = 0; i < weirdoRec.length; i++) {
+      if (msg.msg.includes(weirdoRec[i])) {
+        weirdo.unlock();
+        let notif = new Notification(weirdo);
+        notif.display();
+        break;
+      }
     }
   }
 }
