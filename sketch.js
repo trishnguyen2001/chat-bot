@@ -1262,22 +1262,24 @@ class Notification {
     let y = 150;
 
     //background box
-    fill(213, 220, 240);
-    rect(-10, windowHeight * 0.7, x, y, 5);
+    fill(223, 240, 235, 235);
+    rect(10, windowHeight - 250, x, y, 5);
 
     noFill();
     stroke(102, 118, 157, 170);
     strokeWeight(3);
-    rect(-10, windowHeight * 0.7 + 10, x - 10, y - 20, 5);
+    rect(20, windowHeight - 240, x - 20, y - 20, 5);
     noStroke();
 
-    fill(66, 77, 105);
-    textSize(windowHeight * 0.035);
-    textAlign(LEFT);
+    fill(66, 77, 105, 240);
+    let txtSize = min(windowHeight * 0.035, 24);
+    console.log(windowHeight * 0.035);
+    textSize(txtSize);
+    textAlign(CENTER);
     text(
       `"${this.achvmt.title}" unlocked!\ngo to the achievements page\nto check it out`,
-      40,
-      windowHeight * 0.8
+      160,
+      windowHeight - 175
     );
   }
 }
