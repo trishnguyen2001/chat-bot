@@ -101,19 +101,19 @@ function setup() {
   c = createCanvas(windowWidth, windowHeight);
 
   //set up gui
-  let x = width * 0.02;
-  let sideL = width * 0.15;
+  let x = windowWidth * 0.02;
+  let sideL = windowWidth * 0.15;
   gui = createGui(undefined, "CARE LEVEL", "QuickSettings");
   sliderRange(1, 5);
   gui.addGlobals("CareLevel");
-  gui.setPosition(x + sideL + 12.5, height * 0.02);
-  gui.resize(width * 0.76, height * 0.15);
+  gui.setPosition(x + sideL + 12.5, windowHeight * 0.02);
+  gui.resize(windowWidth * 0.76, windowHeight * 0.15);
   gui.hide();
 
   //input
   inp = createInput();
-  inp.position(width * 0.2, height * 0.9);
-  inp.size(width * 0.625, height * 0.075);
+  inp.position(x + sideL + 20, windowHeight - 70);
+  inp.size(windowWidth * 0.625, 50);
   inp.hide();
 
   //initialize buttons
@@ -124,8 +124,8 @@ function setup() {
   score = 0;
   mi = 0;
   chatbot = "CB";
-  gamestate = "home";
-  // gamestate = "chat";
+  // gamestate = "home";
+  gamestate = "chat";
 
   //initialize bot pfps
   updatePic();
@@ -139,82 +139,88 @@ function setup() {
 
 function initBtns() {
   startBtn = createButton("start");
-  startBtn.position(width * 0.5 - 175, height * 0.6);
+  startBtn.position(windowWidth * 0.5 - 175, windowHeight * 0.6);
   startBtn.size(350, 85);
   startBtn.id("startbtn");
 
   startBtn.mouseOver(() => {
-    startBtn.position(width * 0.5 - 180, height * 0.585);
+    startBtn.position(windowWidth * 0.5 - 180, windowHeight * 0.585);
     startBtn.size(360, 90);
   });
   startBtn.mouseOut(() => {
-    startBtn.position(width * 0.5 - 175, height * 0.6);
+    startBtn.position(windowWidth * 0.5 - 175, windowHeight * 0.6);
     startBtn.size(350, 85);
   });
   startBtn.mousePressed(startGame);
 
   chatBtn = createButton("next");
-  chatBtn.position(width * 0.5 - 75, height * 0.8);
+  chatBtn.position(windowWidth * 0.5 - 75, windowHeight * 0.8);
   chatBtn.size(150, 40);
   chatBtn.mousePressed(startChat);
   chatBtn.hide();
   chatBtn.mouseOver(() => {
-    chatBtn.position(width * 0.5 - 77.5, height * 0.7925);
+    chatBtn.position(windowWidth * 0.5 - 77.5, windowHeight * 0.7925);
     chatBtn.size(155, 45);
   });
   chatBtn.mouseOut(() => {
-    chatBtn.position(width * 0.5 - 75, height * 0.8);
+    chatBtn.position(windowWidth * 0.5 - 75, windowHeight * 0.8);
     chatBtn.size(150, 40);
   });
 
   artStmtBtn = createButton("artist's statement");
-  artStmtBtn.size(200, height * 0.06);
-  artStmtBtn.position(width * 0.475, height * 0.8);
+  artStmtBtn.size(200, windowHeight * 0.06);
+  artStmtBtn.position(windowWidth * 0.475, windowHeight * 0.8);
   artStmtBtn.center("horizontal");
   artStmtBtn.mousePressed(viewArtStmt);
   artStmtBtn.hide();
 
   restartBtn = createButton("retry");
-  restartBtn.position(width * 0.5 - 175, height * 0.6);
+  restartBtn.position(windowWidth * 0.5 - 175, windowHeight * 0.6);
   restartBtn.size(350, 60);
   restartBtn.id("restartbtn");
   restartBtn.mousePressed(reset);
   restartBtn.hide();
   restartBtn.mouseOver(() => {
-    restartBtn.position(width * 0.5 - 180, height * 0.585);
+    restartBtn.position(windowWidth * 0.5 - 180, windowHeight * 0.585);
     restartBtn.size(360, 65);
   });
   restartBtn.mouseOut(() => {
-    restartBtn.position(width * 0.5 - 175, height * 0.6);
+    restartBtn.position(windowWidth * 0.5 - 175, windowHeight * 0.6);
     restartBtn.size(350, 60);
   });
 
   backBtn = createButton("back");
-  backBtn.position(width * 0.02, height * 0.02);
+  backBtn.position(windowWidth * 0.02, windowHeight * 0.02);
   backBtn.mousePressed(reset);
   backBtn.hide();
 
   sendBtn = createButton("send");
-  sendBtn.position(width * 0.85, height * 0.9);
-  sendBtn.size(width * 0.1, height * 0.08);
+  sendBtn.position(
+    windowWidth * 0.02 +
+      windowWidth * 0.15 +
+      windowWidth * 0.625 +
+      windowWidth * 0.045,
+    windowHeight - 70
+  );
+  sendBtn.size(windowWidth * 0.1, 52);
   sendBtn.mousePressed(getMsg);
   sendBtn.hide();
 
   saveBtn = createButton("save chat");
-  saveBtn.position(width * 0.5 - 75, height * 0.75);
+  saveBtn.position(windowWidth * 0.5 - 75, windowHeight * 0.75);
   saveBtn.size(125, 50);
   saveBtn.mousePressed(saveChat);
   saveBtn.hide();
 
   achvBtn = createButton("achievements");
-  if (width * 0.2 > 165) {
+  if (windowWidth * 0.2 > 165) {
     console.log("1");
     achvBtn.size(165, 50);
-    achvBtn.position(width * 0.8, height * 0.05);
+    achvBtn.position(windowWidth * 0.8, windowHeight * 0.05);
   } else {
     console.log("2");
-    achvBtn.size(width * 0.2, 50);
-    achvBtn.position(width * 0.75, height * 0.05);
+    achvBtn.size(windowWidth * 0.2, 50);
+    achvBtn.position(windowWidth * 0.75, windowHeight * 0.05);
   }
   achvBtn.mousePressed(viewAchv);
   achvBtn.hide();
@@ -487,10 +493,10 @@ function draw() {
   if (superSleuth.state === "locked") {
     if (
       gamestate === "chat" &&
-      mouseX >= width * 0.12 &&
-      mouseX <= width * 0.1207 &&
-      mouseY >= height * 0.62 &&
-      mouseY >= height * 0.63
+      mouseX >= windowWidth * 0.12 &&
+      mouseX <= windowWidth * 0.1207 &&
+      mouseY >= windowHeight * 0.62 &&
+      mouseY >= windowHeight * 0.63
     ) {
       superSleuth.unlock();
       result = "superSleuth";
@@ -517,20 +523,20 @@ function homeScreen() {
   //text setup
   textFont(neucha);
   textAlign(CENTER, CENTER);
-  textSize(height * 0.1);
+  textSize(windowHeight * 0.1);
   fill(166, 178, 211);
-  text("welcome to", width * 0.5, height * 0.3);
-  textSize(height * 0.15);
+  text("welcome to", windowWidth * 0.5, windowHeight * 0.3);
+  textSize(windowHeight * 0.15);
   fill(195, 232, 222);
-  text("care-bot", width * 0.5, height * 0.45);
+  text("care-bot", windowWidth * 0.5, windowHeight * 0.45);
 
   imageMode(CORNER);
   image(
     homeBot,
-    width - height * 0.35,
-    height * 0.65,
-    height * 0.35,
-    height * 0.35
+    windowWidth - windowHeight * 0.35,
+    windowHeight * 0.65,
+    windowHeight * 0.35,
+    windowHeight * 0.35
   );
 }
 
@@ -549,33 +555,39 @@ function instrScreen() {
 
   //text setup
   textFont(neucha);
-  textSize(height * 0.08);
+  textSize(windowHeight * 0.08);
   textAlign(CENTER, CENTER);
   fill(195, 232, 222);
-  text("instructions", width * 0.5, height * 0.1);
+  text("instructions", windowWidth * 0.5, windowHeight * 0.1);
 
-  textSize(height * 0.03);
+  textSize(windowHeight * 0.03);
   fill(213, 220, 240);
   text(
     "hello!!\n my name is CB, which is short for care-bot!",
-    width * 0.5,
-    height * 0.25
+    windowWidth * 0.5,
+    windowHeight * 0.25
   );
 
   imageMode(CENTER);
   let img = bots[4].pic;
-  image(img, width * 0.5, height * 0.48, height * 0.3, height * 0.3);
+  image(
+    img,
+    windowWidth * 0.5,
+    windowHeight * 0.48,
+    windowHeight * 0.3,
+    windowHeight * 0.3
+  );
 
   text(
     "feel free to rant, and i'll care as much as you want!",
-    width * 0.5,
-    height * 0.7
+    windowWidth * 0.5,
+    windowHeight * 0.7
   );
 
   text(
     "but if i get too worn out, it's gameover...   :)",
-    width * 0.5,
-    height * 0.75
+    windowWidth * 0.5,
+    windowHeight * 0.75
   );
 }
 
@@ -594,21 +606,21 @@ function achvScreen() {
 
   //text setup
   textFont(neucha);
-  textSize(height * 0.08);
+  textSize(windowHeight * 0.08);
   textAlign(CENTER, CENTER);
   fill(195, 232, 222);
-  text("achievements", width * 0.5, height * 0.1);
+  text("achievements", windowWidth * 0.5, windowHeight * 0.1);
 
-  textSize(height * 0.04);
+  textSize(windowHeight * 0.04);
   fill(213, 220, 240);
-  text("try to unlock all of them!", width * 0.5, height * 0.2);
+  text("try to unlock all of them!", windowWidth * 0.5, windowHeight * 0.2);
 
-  let boxLength = height * 0.34;
-  let boxHeight = height * 0.28;
+  let boxLength = windowHeight * 0.34;
+  let boxHeight = windowHeight * 0.28;
 
-  let incr = height * 0.02;
-  let x = width * 0.5 - boxLength * 1.55;
-  let y = height * 0.25;
+  let incr = windowHeight * 0.02;
+  let x = windowWidth * 0.5 - boxLength * 1.55;
+  let y = windowHeight * 0.25;
 
   meanie.display(x, y);
   bff.display(x + incr + boxLength, y);
@@ -640,17 +652,17 @@ function artStmtScreen() {
 
   //text setup
   textFont(neucha);
-  textSize(height * 0.08);
+  textSize(windowHeight * 0.08);
   textAlign(CENTER, CENTER);
   fill(195, 232, 222);
-  text("artist statement", width * 0.5, height * 0.1);
+  text("artist statement", windowWidth * 0.5, windowHeight * 0.1);
 
-  textSize(height * 0.03);
+  textSize(windowHeight * 0.03);
   fill(213, 220, 240);
   text(
     "I often think about how much people place emphasis on seeming like they care \nand not on how much they actually care.\nIt is commonplace to put up a front of being interested when someone talks to you —\neven more so when people become vulnerable with you.\nI also find myself doing this.\nA lot of people do this from a place of not wanting to hurt others,\nbut I wonder why the care can’t come from a place of genuine concern more.\nI still don’t know if there’s an easy answer to this,\nbut I hope my project will help people become more aware of this.\n\nPlease use this platform to reflect or to simply get your feelings off your chest!\n\nThank you for your time :) \n\n- Trish Nguyen",
-    width * 0.5,
-    height * 0.5
+    windowWidth * 0.5,
+    windowHeight * 0.5
   );
 }
 
@@ -667,21 +679,21 @@ function chatScreen() {
 
   //text setup
   textFont(neucha);
-  textSize(height * 0.1);
+  textSize(windowHeight * 0.1);
   textAlign(CENTER, CENTER);
   fill(191, 207, 178);
   gui.show();
 
   //vars
-  let x = width * 0.02;
+  let x = windowWidth * 0.02;
   msgY = 0.26;
 
   //side menu
-  let sideL = width * 0.15;
-  let sideH = height * 0.835;
+  let sideL = windowWidth * 0.15;
+  let sideH = windowHeight * 0.835;
   fill(166, 178, 211);
   noStroke();
-  rect(x, height * 0.15, sideL, sideH, 5);
+  rect(x, windowHeight * 0.15, sideL, sideH, 5);
 
   //side bar profiles
   let sideBarIconSize;
@@ -690,17 +702,17 @@ function chatScreen() {
   let sideBarX;
   let highlightX;
   //show both name and pfp
-  if (windowWidth >= 950) {
+  if (windowWidth >= windowHeight * 1.5) {
     sideBarX = x + sideL * 0.2;
-    sideBarIconSize = height * 0.1;
+    sideBarIconSize = windowHeight * 0.1;
     incr = sideH * 0.07 + sideBarIconSize;
-    sideBarY = height * 0.245;
+    sideBarY = windowHeight * 0.245;
     highlightX = sideBarX + sideBarX * 0.9;
 
     //display names
     fill(66, 77, 105);
     textAlign(LEFT);
-    textSize(height * 0.035);
+    textSize(windowHeight * 0.035);
     for (let i = 1; i <= 5; i++) {
       text(
         bots[i].displayName,
@@ -712,9 +724,9 @@ function chatScreen() {
   //show only pfp
   else {
     sideBarX = x + sideL * 0.5;
-    sideBarIconSize = height * 0.13;
+    sideBarIconSize = windowHeight * 0.13;
     incr = sideH * 0.035 + sideBarIconSize;
-    sideBarY = height * 0.245;
+    sideBarY = windowHeight * 0.245;
     highlightX = sideBarX;
   }
 
@@ -774,53 +786,72 @@ function chatScreen() {
   //chat box
   fill(166, 178, 211);
   noStroke();
-  rect(x + sideL + 20, height * 0.15, width * 0.75, height * 0.725, 5);
+  rect(
+    x + sideL + 20,
+    windowHeight * 0.15,
+    windowWidth * 0.75,
+    windowHeight - windowHeight * 0.15 - 80,
+    10
+  );
 
   //menu bar box
   noStroke();
   fill(102, 118, 157, 100);
-  rect(x + sideL + 20, height * 0.15, width * 0.75, height * 0.09, 5);
+  rect(
+    x + sideL + 20,
+    windowHeight * 0.15,
+    windowWidth * 0.75,
+    windowHeight * 0.09,
+    5
+  );
 
   //menu bar pfp
+  let pfpSize = windowHeight * 0.0775;
+  if (windowHeight * 0.0775 > 65) {
+    pfpSize = 65;
+  }
   imageMode(CENTER);
-  image(
-    currentBot,
-    x + sideL + 55,
-    height * 0.195,
-    height * 0.0775,
-    height * 0.0775
-  );
+  image(currentBot, x + sideL + 65, windowHeight * 0.195, pfpSize, pfpSize);
 
   //menu bar descr
   textAlign(LEFT);
 
   fill(66, 77, 105);
-  textSize(height * 0.04);
-  text(bots[CareLevel].displayName, x + sideL + 85, height * 0.1775);
+  textSize(windowHeight * 0.04);
+  text(
+    bots[CareLevel].displayName,
+    x + sideL + pfpSize + 50,
+    windowHeight * 0.1775
+  );
 
   fill(66, 77, 105, 175);
-  textSize(height * 0.025);
-  text("active now", x + sideL + 85, height * 0.215);
+  textSize(windowHeight * 0.025);
+  text("active now", x + sideL + pfpSize + 50, windowHeight * 0.215);
 
   fill(160, 222, 193);
   ellipseMode(CENTER);
-  ellipse(x + sideL + 150, height * 0.22, height * 0.015, height * 0.015);
+  ellipse(
+    x + sideL + pfpSize + windowHeight * 0.025 * 7,
+    windowHeight * 0.22,
+    windowHeight * 0.015,
+    windowHeight * 0.015
+  );
 
   //menu bar icons
   image(
     phonePic,
-    x + sideL + width * 0.75 - 40,
-    height * 0.2,
-    height * 0.05,
-    height * 0.05
+    x + sideL + windowWidth * 0.75 - windowHeight * 0.045 * 2,
+    windowHeight * 0.2,
+    windowHeight * 0.045,
+    windowHeight * 0.045
   );
 
   image(
     ellipsePic,
-    x + sideL + width * 0.75 - 5,
-    height * 0.2,
-    height * 0.04,
-    height * 0.04
+    x + sideL + windowWidth * 0.75 - windowHeight * 0.02,
+    windowHeight * 0.2,
+    windowHeight * 0.04,
+    windowHeight * 0.04
   );
 
   //display messages
@@ -858,32 +889,32 @@ function endScreen() {
 
   //text setup
   textFont(neucha);
-  textSize(height * 0.13);
+  textSize(windowHeight * 0.13);
   textAlign(CENTER, CENTER);
   fill(195, 232, 222);
-  text("game over", width * 0.5, height * 0.1);
+  text("game over", windowWidth * 0.5, windowHeight * 0.1);
 
-  textSize(height * 0.055);
+  textSize(windowHeight * 0.055);
   fill(213, 220, 240);
   text(
     "sorry!!\na little robot like me can only take so much!\n\nyou can try again in a bit!",
-    width * 0.5,
-    height * 0.4
+    windowWidth * 0.5,
+    windowHeight * 0.4
   );
 
   imageMode(CORNER);
 
   image(
     homeBot,
-    width - height * 0.35,
-    height * 0.65,
-    height * 0.35,
-    height * 0.35
+    windowWidth - windowHeight * 0.35,
+    windowHeight * 0.65,
+    windowHeight * 0.35,
+    windowHeight * 0.35
   );
 
   //for testing screencap
   // background(0);
-  // image(chatPic, width * 0.1, 0);
+  // image(chatPic, windowWidth * 0.1, 0);
 }
 
 //////////////////////////MSG FUNCTIONS/////////////////////
@@ -891,25 +922,30 @@ function prepScreenshot() {
   push();
   dotColor.setAlpha(0);
 
-  let chatBoxStart = width * 0.02 + width * 0.15 + 20;
-  let chatBoxEnd = chatBoxStart + width * 0.75;
+  let chatBoxStart = windowWidth * 0.02 + windowWidth * 0.15 + 20;
+  let chatBoxEnd = chatBoxStart + windowWidth * 0.75;
   let chatBoxHalf = (chatBoxEnd - chatBoxStart) / 2;
 
-  translate(chatBoxStart + chatBoxHalf, height * 0.035);
+  translate(chatBoxStart + chatBoxHalf, windowHeight * 0.035);
   textAlign(CENTER);
-  textSize(height * 0.065);
+  textSize(windowHeight * 0.065);
   fill(195, 232, 222);
   text("care-bot", 0, 0);
 
-  textSize(height * 0.025);
+  textSize(windowHeight * 0.025);
   fill(213, 220, 240);
   text(month() + "/" + day() + "/" + year() + " @ " + getTime(), 0, 30);
 
-  textSize(height * 0.025);
+  textSize(windowHeight * 0.025);
   fill(213, 220, 240);
   text("care level: " + CareLevel, 0, 50);
 
-  chatPic = get(chatBoxStart, 0, chatBoxEnd - chatBoxStart, height * 0.875);
+  chatPic = get(
+    chatBoxStart,
+    0,
+    chatBoxEnd - chatBoxStart,
+    windowHeight * 0.875
+  );
   pop();
 }
 
@@ -1004,15 +1040,17 @@ function updatePic() {
 function loadAnim() {
   push();
   // console.log("animating");
-  let x = width * 0.02 + width * 0.15 + 30;
-  translate(x, height * 0.84);
+  let x = windowWidth * 0.02 + windowWidth * 0.15 + 30;
+  translate(x, windowHeight * 0.84);
   fill(dotColor);
 
   textAlign(LEFT);
-  textSize(height * 0.03);
+  textSize(windowHeight * 0.03);
   text("CB is typing", 0, 0);
 
-  translate(100, 0);
+  let incr = windowHeight * 0.03 * 2;
+
+  translate(100 + incr, 0);
   noStroke();
   ellipse(15 * sin(radians(k)), 0, 6 * cos(radians(m)), 6 * cos(radians(m)));
   ellipse(
@@ -1141,14 +1179,18 @@ class Msg {
     rectMode(CORNER);
 
     //layout vars
-    let x = width * 0.02 + width * 0.15 + 55;
+    let x = windowWidth * 0.02 + windowWidth * 0.15 + 55;
 
     //reformat msg + update msgL
     let r = reformatTxt(this.msg);
 
     //display measurements
-    let msgBoxHeight = msgL * height * 0.05;
+    let msgBoxHeight = msgL * windowHeight * 0.05;
     let msgBoxCenter = msgBoxHeight * 0.5;
+    let picSize = windowHeight * 0.065;
+    if (windowHeight * 0.065 > 47.5) {
+      picSize = 47.5;
+    }
 
     //console.log(`msgBoxHeight = ${msgBoxHeight}`);
 
@@ -1156,51 +1198,55 @@ class Msg {
       //msg label
       fill(213, 220, 240);
       textAlign(RIGHT);
-      textSize(height * 0.018);
-      text(this.time + " | " + this.sender, width * 0.87, height * y);
+      textSize(windowHeight * 0.018);
+      text(
+        this.time + " | " + this.sender,
+        windowWidth * 0.87,
+        windowHeight * y
+      );
 
       //pfp
       imageMode(CENTER);
       image(
         playerPic,
-        width * 0.91,
-        height * (y + 0.04),
-        height * 0.065,
-        height * 0.065
+        windowWidth * 0.91,
+        windowHeight * (y + 0.04),
+        picSize,
+        picSize
       );
 
       //msg box
-      let diff = width * 0.91 - 175 - 26.5;
+      let diff = windowWidth * 0.91 - 175 - 26.5;
       noStroke();
       fill(223, 240, 235);
-      rect(diff, height * (y + 0.015), 175, msgBoxHeight, 5);
+      rect(diff, windowHeight * (y + 0.015), 175, msgBoxHeight, 5);
 
       //msg
       fill(66, 77, 105);
       textAlign(RIGHT);
-      textSize(height * 0.02);
-      text(r, diff + 175 - 5, height * (y + 0.015) + msgBoxCenter);
+      textSize(windowHeight * 0.02);
+      text(r, diff + 175 - 5, windowHeight * (y + 0.015) + msgBoxCenter);
     } else {
       //msg label
       fill(213, 220, 240);
       textAlign(LEFT);
-      textSize(height * 0.018);
-      text(this.time + " | " + this.sender, x + 30, height * y);
+      textSize(windowHeight * 0.018);
+      text(this.time + " | " + this.sender, x + 30, windowHeight * y);
 
       //pfp
       imageMode(CENTER);
-      image(currentBot, x, height * (y + 0.04), height * 0.065, height * 0.065);
+      image(currentBot, x, windowHeight * (y + 0.04), picSize, picSize);
 
       //msg box
       noStroke();
       fill(213, 220, 240);
-      rect(x + 30, height * (y + 0.015), 175, msgBoxHeight, 5);
+      rect(x + 30, windowHeight * (y + 0.015), 175, msgBoxHeight, 5);
 
       //msg
       fill(102, 118, 157);
       textAlign(LEFT);
-      textSize(height * 0.02);
-      text(r, x + 37, height * (y + 0.015) + msgBoxCenter);
+      textSize(windowHeight * 0.02);
+      text(r, x + 37, windowHeight * (y + 0.015) + msgBoxCenter);
     }
     msgY += msgL * 0.03 + 0.01;
   }
@@ -1217,37 +1263,22 @@ class Notification {
 
     //background box
     fill(213, 220, 240);
-    rect(-10, height * 0.7, x, y, 5);
+    rect(-10, windowHeight * 0.7, x, y, 5);
 
     noFill();
     stroke(102, 118, 157, 170);
     strokeWeight(3);
-    rect(-10, height * 0.7 + 10, x - 10, y - 20, 5);
+    rect(-10, windowHeight * 0.7 + 10, x - 10, y - 20, 5);
     noStroke();
 
     fill(66, 77, 105);
-    textSize(height * 0.035);
+    textSize(windowHeight * 0.035);
     textAlign(LEFT);
     text(
       `"${this.achvmt.title}" unlocked!\ngo to the achievements page\nto check it out`,
       40,
-      height * 0.8
+      windowHeight * 0.8
     );
-
-    // let direction = "growing";
-    // while (displaying) {
-    //   if (direction === "growing") {
-    //     x++;
-    //     if (x >= 320) {
-    //       direction = "shrinking";
-    //     }
-    //   } else {
-    //     x--;
-    //     if (x <= 300) {
-    //       direction = "growing";
-    //     }
-    //   }
-    // }
   }
 }
 
@@ -1261,8 +1292,8 @@ class Achvmt {
 
   //shows achievement on screen
   display(x, y) {
-    let boxLength = height * 0.34;
-    let boxHeight = height * 0.28;
+    let boxLength = windowHeight * 0.34;
+    let boxHeight = windowHeight * 0.28;
     if (this.state === "locked") {
       textFont(neucha);
 
@@ -1272,17 +1303,17 @@ class Achvmt {
       rect(x, y, boxLength, boxHeight, 10);
 
       //achvmt title
-      textSize(height * 0.04);
+      textSize(windowHeight * 0.04);
       fill(66, 77, 105);
       text(this.title, x + boxLength * 0.5, y + boxHeight * 0.15);
 
       //achvmt img
       imageMode(CENTER);
-      lockedPic.resize(height * 0.085, 0);
+      lockedPic.resize(windowHeight * 0.085, 0);
       image(lockedPic, x + boxLength * 0.5, y + boxHeight * 0.45);
 
       //achvmt descr
-      textSize(height * 0.035);
+      textSize(windowHeight * 0.035);
       fill(213, 220, 240);
       text("[redacted]", x + boxLength * 0.5, y + boxHeight * 0.75);
     } else {
@@ -1293,16 +1324,16 @@ class Achvmt {
       rect(x, y, boxLength, boxHeight, 10);
 
       //achvmt title
-      textSize(height * 0.04);
+      textSize(windowHeight * 0.04);
       fill(66, 77, 105);
       text(this.title, x + boxLength * 0.5, y + boxHeight * 0.15);
 
       //achvmt img
-      this.img.resize(height * 0.075, 0);
+      this.img.resize(windowHeight * 0.075, 0);
       image(this.img, x + boxLength * 0.5, y + boxHeight * 0.45);
 
       //achvmt descr
-      textSize(height * 0.023);
+      textSize(windowHeight * 0.023);
       fill(102, 118, 157);
       text(this.descr, x + boxLength * 0.5, y + boxHeight * 0.75);
     }

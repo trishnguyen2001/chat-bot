@@ -21,7 +21,7 @@ input{
     border: 0px;
     background-color: #d5dcf0;
     text-indent: 10px;
-    border-radius: 15px;
+    border-radius: 10px;
 }
 
 button {
@@ -34,7 +34,7 @@ button {
     color: #66769D;
     border: 0px;
     background-color: #d5dcf0;
-    border-radius: 5px;
+    border-radius: 7.5px;
     cursor: pointer;
 }
 
