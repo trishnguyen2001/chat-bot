@@ -48,6 +48,8 @@ let clickSound;
 let notifSound;
 let typingSound;
 let endSound;
+let swooshSound;
+let unlockSound;
 
 //achvmts
 let meanie;
@@ -56,7 +58,25 @@ let botception;
 let superSleuth;
 let emo;
 let weirdo;
+
 let lockedPic;
+
+//achvmt requirements
+let meanieRec = [
+  "you're such an asshole",
+  "you're useless",
+  "thanks for nothing CB",
+];
+let bffRec = [
+  "you're so nice",
+  "what would i without you",
+  "ily",
+  "i love you",
+  "you're the best",
+];
+let botceptionRec = ["simulation", "you're just a robot"];
+let emoRec = ["what's the point", "life is pointless"];
+let weirdoRec = ["you're cute", "wanna go on a date?"];
 
 //animation vars
 let k = 0,
@@ -348,8 +368,6 @@ function preload() {
 
   //sounds
   soundFormats("mp3", "wav");
-  // bgSound = loadSound("assets/bgMusic.mp3");
-  // bgSound.setVolume(0.05);
 
   typingSound = loadSound("assets/typing.wav");
   typingSound.rate(2);
@@ -362,6 +380,12 @@ function preload() {
 
   endSound = loadSound("assets/beep.mp3");
   endSound.setVolume(0.4);
+
+  swooshSound = loadSound("assets/swoosh.mp3");
+  swooshSound.setVolume(0); //doesn't play @ initial load
+
+  unlockSound = loadSound("assets/unlock.mp3");
+  unlockSound.setVolume(0.7);
 }
 
 function keyPressed() {
@@ -409,6 +433,20 @@ function draw() {
   //checks if game is over
   if (score > 20) {
     gamestate = "end";
+  }
+
+  //checks for super-sleuth achvmt
+  if (
+    gamestate === "chat" &&
+    mouseX >= width * 0.12 &&
+    mouseX <= width * 0.1207 &&
+    mouseY >= height * 0.62 &&
+    mouseY >= height * 0.63 &&
+    superSleuth.state === "locked"
+  ) {
+    superSleuth.unlock();
+    let notif = new Notification(superSleuth);
+    notif.display();
   }
 }
 
@@ -530,12 +568,12 @@ function achvScreen() {
   emo.display(x + incr + boxLength, y + boxHeight + incr);
   weirdo.display(x + 2 * (incr + boxLength), y + boxHeight + incr);
 
-  meanie.unlock();
+  // meanie.unlock();
   //bff.unlock();
-  botception.unlock();
+  // botception.unlock();
   //superSleuth.unlock();
-  emo.unlock();
-  weirdo.unlock();
+  // emo.unlock();
+  // weirdo.unlock();
 }
 
 function artStmtScreen() {
@@ -566,15 +604,6 @@ function artStmtScreen() {
     height * 0.5
   );
 }
-
-//dark blue         #424D69    66, 77, 105
-//blue              #66769D    102, 118, 157
-//light blue        #A6B2D3    166, 178, 211
-//light light blue  #d5dcf0    213, 220, 240
-//white             #FFFFFF    255, 255, 255
-//blue green        #c3e8de    195, 232, 222
-//green             #a0dec1    160, 222, 193
-//light green       #dff0eb    223, 240, 235
 
 function chatScreen() {
   achvBtn.hide();
@@ -802,11 +831,15 @@ function endScreen() {
     height * 0.35,
     height * 0.35
   );
+
+  //for testing screencap
+  // background(0);
+  // image(chatPic, width * 0.1, 0);
 }
 
 //////////////////////////MSG FUNCTIONS/////////////////////
 function prepScreenshot() {
-  translate(0, 0);
+  push();
   dotColor.setAlpha(0);
 
   let chatBoxStart = width * 0.02 + width * 0.15 + 20;
@@ -828,6 +861,7 @@ function prepScreenshot() {
   text("care level: " + CareLevel, 0, 50);
 
   chatPic = get(chatBoxStart, 0, chatBoxEnd - chatBoxStart, height * 0.875);
+  pop();
 }
 
 function getTime() {
@@ -836,7 +870,6 @@ function getTime() {
 
 function respond(msg) {
   let rand = int(random(0, 10));
-  console.log(`rand = ${rand}`);
   if (gamestate === "chat") notifSound.play();
   return new Msg(getTime(), bots[CareLevel].responses[rand], chatbot);
 }
@@ -887,6 +920,9 @@ function getMsg() {
   dotColor.setAlpha(255);
   typingSound.play();
 
+  //test for achvmt
+  testAchv(current);
+
   //bot response
   let t = int(random(1500, 5450));
   setTimeout(() => {
@@ -905,17 +941,19 @@ function showMsgs() {
 }
 
 function updatePic() {
-  console.log(`UPDATEPIC: carelvl = ${CareLevel}`);
-  console.log(`UPDATEPIC: pic = ${bots[CareLevel].pic}`);
+  // console.log(`UPDATEPIC: carelvl = ${CareLevel}`);
+  // console.log(`UPDATEPIC: pic = ${bots[CareLevel].pic}`);
   currentBot = loadImage("assets/care" + CareLevel + ".png");
-  //dummy.copy(currentBot, 0, 0, 305, 305, 0, 0, 305, 305);
   currentLvl = CareLevel;
+  swooshSound.play();
+  swooshSound.setVolume(0.5);
 }
 
 //////////////////////////ANIMATION FUNCTIONS////////////////
 
 //LOADING ANIMATION: https://editor.p5js.org/black/sketches/HJbGfpCvM
 function loadAnim() {
+  push();
   // console.log("animating");
   let x = width * 0.02 + width * 0.15 + 30;
   translate(x, height * 0.84);
@@ -950,6 +988,7 @@ function loadAnim() {
     k = 0;
     m = 0;
   }
+  pop();
 }
 
 function stopAnim() {
@@ -959,25 +998,21 @@ function stopAnim() {
 //////////////////////////GAME STATE FUNCTIONS////////////////
 function startGame() {
   clickSound.play();
-  translate(0, 0);
   gamestate = "instr";
 }
 
 function startChat() {
   clickSound.play();
-  translate(0, 0);
   gamestate = "chat";
 }
 
 function viewArtStmt() {
   clickSound.play();
-  translate(0, 0);
   gamestate = "artstmt";
 }
 
 function reset() {
   clickSound.play();
-  translate(0, 0);
   gamestate = "home";
   score = 0;
   msgs = [];
@@ -985,9 +1020,56 @@ function reset() {
 }
 
 function viewAchv() {
-  translate(0, 0);
   clickSound.play();
   gamestate = "achv";
+}
+
+function testAchv(msg) {
+  //meanie
+  for (let i = 0; i < meanieRec.length; i++) {
+    if (msg.msg.includes(meanieRec[i])) {
+      meanie.unlock();
+      let notif = new Notification(meanie);
+      notif.display();
+      break;
+    }
+  }
+  //bff
+  for (let i = 0; i < bffRec.length; i++) {
+    if (msg.msg.includes(bffRec[i])) {
+      bff.unlock();
+      let notif = new Notification(bff);
+      notif.display();
+      break;
+    }
+  }
+  //botception
+  for (let i = 0; i < botceptionRec.length; i++) {
+    if (msg.msg.includes(botceptionRec[i])) {
+      botception.unlock();
+      let notif = new Notification(botception);
+      notif.display();
+      break;
+    }
+  }
+  //emo
+  for (let i = 0; i < emoRec.length; i++) {
+    if (msg.msg.includes(emoRec[i])) {
+      emo.unlock();
+      let notif = new Notification(emo);
+      notif.display();
+      break;
+    }
+  }
+  //weirdo
+  for (let i = 0; i < weirdoRec.length; i++) {
+    if (msg.msg.includes(weirdoRec[i])) {
+      weirdo.unlock();
+      let notif = new Notification(weirdo);
+      notif.display();
+      break;
+    }
+  }
 }
 
 //////////////////////////CLASSES//////////////////////////
@@ -1068,7 +1150,20 @@ class Msg {
   }
 }
 
-class Notification {}
+class Notification {
+  constructor(achvmt) {
+    this.achvmt = achvmt;
+  }
+
+  display() {
+    unlockSound.play();
+    unlockSound.play();
+    alert(
+      `"${this.achvmt.title}" unlocked!\ngo to the achievement's page to check it out`
+    );
+    // fill();
+  }
+}
 
 class Achvmt {
   constructor(title, descr, img, state) {
