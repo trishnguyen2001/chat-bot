@@ -126,6 +126,7 @@ function setup() {
   chatbot = "CB";
   gamestate = "home";
   // gamestate = "chat";
+  // gamestate = "achv";
 
   //initialize bot pfps
   updatePic();
@@ -615,19 +616,19 @@ function achvScreen() {
   fill(213, 220, 240);
   text("try to unlock all of them!", windowWidth * 0.5, windowHeight * 0.2);
 
-  let boxLength = windowHeight * 0.34;
-  let boxHeight = windowHeight * 0.28;
+  let boxLength = min(windowHeight * 0.34, 350);
+  let boxHeight = min(windowHeight * 0.28, 240);
 
-  let incr = windowHeight * 0.02;
-  let x = windowWidth * 0.5 - boxLength * 1.55;
+  let incr = min(boxLength * 0.15, 5);
+  let x = max(windowWidth * 0.5 - boxLength * 1.5, 10);
   let y = windowHeight * 0.25;
 
   meanie.display(x, y);
   bff.display(x + incr + boxLength, y);
   botception.display(x + 2 * (incr + boxLength), y);
-  superSleuth.display(x, y + boxHeight + incr);
-  emo.display(x + incr + boxLength, y + boxHeight + incr);
-  weirdo.display(x + 2 * (incr + boxLength), y + boxHeight + incr);
+  superSleuth.display(x, y + boxHeight + incr * 3);
+  emo.display(x + incr + boxLength, y + boxHeight + incr * 3);
+  weirdo.display(x + 2 * (incr + boxLength), y + boxHeight + incr * 3);
 
   // meanie.unlock();
   //bff.unlock();
@@ -1294,8 +1295,10 @@ class Achvmt {
 
   //shows achievement on screen
   display(x, y) {
-    let boxLength = windowHeight * 0.34;
-    let boxHeight = windowHeight * 0.28;
+    let boxLength = min(windowHeight * 0.34, 290);
+    let boxHeight = min(windowHeight * 0.28, 230);
+
+    //achvmt locked
     if (this.state === "locked") {
       textFont(neucha);
 
@@ -1310,15 +1313,23 @@ class Achvmt {
       text(this.title, x + boxLength * 0.5, y + boxHeight * 0.15);
 
       //achvmt img
+      let imgSize = min(windowHeight * 0.06, 95);
       imageMode(CENTER);
-      lockedPic.resize(windowHeight * 0.085, 0);
-      image(lockedPic, x + boxLength * 0.5, y + boxHeight * 0.45);
+      image(
+        lockedPic,
+        x + boxLength * 0.5,
+        y + boxHeight * 0.45,
+        imgSize,
+        imgSize
+      );
 
       //achvmt descr
       textSize(windowHeight * 0.035);
       fill(213, 220, 240);
       text("[redacted]", x + boxLength * 0.5, y + boxHeight * 0.75);
-    } else {
+    }
+    //achvmt unlocked
+    else {
       textFont(neucha);
       //achvmt box
       noStroke();
@@ -1331,8 +1342,14 @@ class Achvmt {
       text(this.title, x + boxLength * 0.5, y + boxHeight * 0.15);
 
       //achvmt img
-      this.img.resize(windowHeight * 0.075, 0);
-      image(this.img, x + boxLength * 0.5, y + boxHeight * 0.45);
+      let imgSize = min(windowHeight * 0.06, 20);
+      image(
+        this.img,
+        x + boxLength * 0.5,
+        y + boxHeight * 0.45,
+        imgSize,
+        imgSize
+      );
 
       //achvmt descr
       textSize(windowHeight * 0.023);
