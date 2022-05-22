@@ -126,7 +126,7 @@ function setup() {
   chatbot = "CB";
   gamestate = "home";
   // gamestate = "chat";
-  gamestate = "achv";
+  // gamestate = "achv";
 
   //initialize bot pfps
   updatePic();
