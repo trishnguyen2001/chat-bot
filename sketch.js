@@ -85,6 +85,7 @@ let k = 0,
 let dotColor;
 let responding;
 let displaying;
+let cursor;
 
 //////////////////////////COLORS/////////////////////
 //dark blue         #424D69    66, 77, 105
@@ -136,6 +137,8 @@ function setup() {
   dotColor.setAlpha(255);
   responding = false;
   displaying = false;
+
+  // noCursor();
 }
 
 function initBtns() {
@@ -197,10 +200,7 @@ function initBtns() {
 
   sendBtn = createButton("send");
   sendBtn.position(
-    windowWidth * 0.02 +
-      windowWidth * 0.15 +
-      windowWidth * 0.625 +
-      windowWidth * 0.045,
+    windowWidth * 0.15 + windowWidth * 0.625 + windowWidth * 0.045 + 10,
     windowHeight - 70
   );
   sendBtn.size(windowWidth * 0.1, 52);
@@ -334,6 +334,7 @@ function preload() {
   playerPic = loadImage("assets/player.png");
   homeBot = loadImage("assets/homepg.png");
   dummy = loadImage("assets/dummy.png");
+  cursor = loadImage("assets/cursor.png");
 
   //achvmt pics
   meanie = new Achvmt(
@@ -495,7 +496,7 @@ function draw() {
     if (
       gamestate === "chat" &&
       mouseX >= windowWidth * 0.12 &&
-      mouseX <= windowWidth * 0.1207 &&
+      mouseX <= windowWidth * 0.125 &&
       mouseY >= windowHeight * 0.62 &&
       mouseY >= windowHeight * 0.63
     ) {
@@ -504,6 +505,9 @@ function draw() {
       playNotifSound();
     }
   }
+
+  //mouse cursor
+  // image(cursor, mouseX, mouseY, 40, 40);
 }
 
 //////////////////////////SCREEN RENDERING FUNCTIONS/////////////////////
@@ -702,6 +706,7 @@ function chatScreen() {
   let sideBarY;
   let sideBarX;
   let highlightX;
+
   //show both name and pfp
   if (windowWidth >= windowHeight * 1.5) {
     sideBarX = x + sideL * 0.2;
@@ -1032,7 +1037,7 @@ function updatePic() {
   currentBot = loadImage("assets/care" + CareLevel + ".png");
   currentLvl = CareLevel;
   swooshSound.play();
-  swooshSound.setVolume(0.5);
+  swooshSound.setVolume(0.35);
 }
 
 //////////////////////////ANIMATION FUNCTIONS////////////////
