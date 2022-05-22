@@ -126,7 +126,7 @@ function setup() {
   chatbot = "CB";
   gamestate = "home";
   // gamestate = "chat";
-  // gamestate = "achv";
+  gamestate = "achv";
 
   //initialize bot pfps
   updatePic();
@@ -631,9 +631,9 @@ function achvScreen() {
   weirdo.display(x + 2 * (incr + boxLength), y + boxHeight + incr * 3);
 
   // meanie.unlock();
-  //bff.unlock();
+  // bff.unlock();
   // botception.unlock();
-  //superSleuth.unlock();
+  // superSleuth.unlock();
   // emo.unlock();
   // weirdo.unlock();
 }
@@ -1318,7 +1318,7 @@ class Achvmt {
       image(
         lockedPic,
         x + boxLength * 0.5,
-        y + boxHeight * 0.45,
+        y + boxHeight * 0.475,
         imgSize,
         imgSize
       );
@@ -1342,19 +1342,19 @@ class Achvmt {
       text(this.title, x + boxLength * 0.5, y + boxHeight * 0.15);
 
       //achvmt img
-      let imgSize = min(windowHeight * 0.06, 20);
+      let imgSize = min(windowHeight * 0.1, 95);
       image(
         this.img,
         x + boxLength * 0.5,
-        y + boxHeight * 0.45,
+        y + boxHeight * 0.475,
         imgSize,
         imgSize
       );
 
       //achvmt descr
-      textSize(windowHeight * 0.023);
+      textSize(windowHeight * 0.018);
       fill(102, 118, 157);
-      text(this.descr, x + boxLength * 0.5, y + boxHeight * 0.75);
+      text(this.descr, x + boxLength * 0.5, y + boxHeight * 0.83);
     }
   }
 
