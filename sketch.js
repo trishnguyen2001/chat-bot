@@ -69,7 +69,7 @@ let meanieRec = [
 ];
 let bffRec = [
   "you're so nice",
-  "what would i without you",
+  "what would i do without you",
   "ily",
   "i love you",
   "you're the best",
